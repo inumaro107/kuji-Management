@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="くじ巡回">
+<meta name="theme-color" content="#0a0a0f">
+<title>くじ巡回ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121a;
+    --bg3: #1a1a26;
+    --card: #16161f;
+    --border: #2a2a3d;
+    --accent: #00f5c4;
+    --accent2: #ff6b6b;
+    --accent3: #ffd93d;
+    --text: #e8e8f0;
+    --text2: #888899;
+    --text3: #555566;
+    --font: 'Zen Kaku Gothic New', sans-serif;
+    --mono: 'Share Tech Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font);
+    min-height: 100vh;
+    padding-bottom: 100px;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 20px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), #00a8ff);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  .logo-text {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--text2);
+    font-family: var(--mono);
+    letter-spacing: 1px;
+  }
+  .header-stats {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .stat-pill {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--text2);
+    font-family: var(--mono);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .stat-pill .val { color: var(--accent); font-weight: 700; font-size: 13px; }
+
+  /* MAIN */
+  .main { padding: 16px; }
+
+  /* KUJI SELECTOR */
+  .kuji-selector {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .kuji-selector-label {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .kuji-select-row {
+    display: flex; gap: 8px; align-items: center;
+  }
+  select, input {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: var(--font);
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  select:focus, input:focus {
+    border-color: var(--accent);
+  }
+  select option { background: var(--bg3); }
+
+  /* BTN */
+  .btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-family: var(--font);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn-accent {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+  .btn-accent:active { background: #00d4a8; }
+  .btn-danger {
+    background: transparent;
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--text2);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 20px 0 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* STORE CARD */
+  .store-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .store-card.has-stock { border-color: rgba(0,245,196,0.3); }
+  .store-card.no-stock { opacity: 0.5; }
+
+  .store-header {
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .store-info { flex: 1; }
+  .store-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 3px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .store-type-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 400;
+  }
+  .badge-711 { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+  .badge-lw { background: rgba(0,168,255,0.2); color: #00a8ff; }
+  .badge-fm { background: rgba(0,245,196,0.2); color: var(--accent); }
+  .badge-mm { background: rgba(255,217,61,0.2); color: var(--accent3); }
+  .badge-other { background: rgba(136,136,153,0.2); color: var(--text2); }
+
+  .store-location {
+    font-size: 12px;
+    color: var(--text2);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .store-actions { display: flex; gap: 6px; flex-shrink: 0; }
+
+  .store-time {
+    padding: 0 16px 10px;
+    font-size: 11px;
+    color: var(--text3);
+    font-family: var(--mono);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .store-time.recent { color: var(--accent); }
+  .store-time.old { color: var(--accent2); }
+
+  /* PRIZES */
+  .prizes-section {
+    border-top: 1px solid var(--border);
+    padding: 12px 16px;
+  }
+  .prizes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .prize-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-width: 80px;
+  }
+  .prize-chip:active { transform: scale(0.95); }
+  .prize-chip.has-stock { border-color: rgba(0,245,196,0.4); background: rgba(0,245,196,0.06); }
+  .prize-chip.no-stock { opacity: 0.4; }
+  .prize-rank {
+    font-family: var(--mono);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1;
+  }
+  .rank-A { color: #ffd93d; }
+  .rank-B { color: #ff9f43; }
+  .rank-C { color: #c8a4ff; }
+  .rank-D { color: var(--text2); }
+  .rank-E { color: var(--text3); }
+  .rank-LAST, .rank-ラスト { color: #ff6b6b; }
+  .prize-count {
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .prize-count.zero { color: var(--text3); }
+  .prize-count.low { color: var(--accent2); }
+  .prize-count.mid { color: var(--accent3); }
+  .prize-count.high { color: var(--accent); }
+  .prize-unit { font-size: 10px; color: var(--text3); }
+
+  /* ADD STORE FORM */
+  .add-form {
+    background: var(--card);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    animation: slideIn 0.2s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .form-row { margin-bottom: 10px; }
+  .form-label {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text2);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* PRIZES EDITOR */
+  .prizes-editor { margin-top: 10px; }
+  .prize-editor-row {
+    display: flex; gap: 8px; align-items: center;
+    margin-bottom: 8px;
+  }
+  .prize-editor-row .rank-input { width: 70px; flex-shrink: 0; text-align: center; }
+  .prize-editor-row .count-input { width: 80px; flex-shrink: 0; text-align: center; }
+  .remove-prize-btn {
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+  }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    z-index: 200;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 50%;
+    width: 58px; height: 58px;
+    font-size: 28px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 24px rgba(0,245,196,0.4);
+    transition: all 0.15s;
+    font-family: var(--font);
+    font-weight: 900;
+  }
+  .fab:active { transform: scale(0.92); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 300;
+    display: flex; align-items: flex-end;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom));
+    transform: translateY(40px);
+    transition: transform 0.3s ease;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-title {
+    font-size: 18px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .modal-close {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 50%;
+    width: 30px; height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state .msg { font-size: 14px; line-height: 1.6; }
+
+  /* FILTER TABS */
+  .filter-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 12px;
+    font-family: var(--font);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+    font-weight: 700;
+  }
+
+  /* UPDATE ANIMATION */
+  @keyframes flash {
+    0% { background: rgba(0,245,196,0.2); }
+    100% { background: transparent; }
+  }
+  .flash { animation: flash 0.4s ease; }
+
+  /* CHAIN CHIPS */
+  .chain-chip-group {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .chain-chip input[type="checkbox"] { display: none; }
+  .chip-body {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: var(--bg3);
+    color: var(--text3);
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chain-chip input:checked + .chip-711 { background: rgba(255,107,107,0.15); border-color: #ff6b6b; color: #ff6b6b; }
+  .chain-chip input:checked + .chip-lw  { background: rgba(0,168,255,0.15); border-color: #00a8ff; color: #00a8ff; }
+  .chain-chip input:checked + .chip-fm  { background: rgba(0,245,196,0.15); border-color: var(--accent); color: var(--accent); }
+  .chain-chip input:checked + .chip-mm  { background: rgba(255,217,61,0.15); border-color: var(--accent3); color: var(--accent3); }
+  .chain-chip input:checked + .chip-other { background: rgba(136,136,153,0.15); border-color: var(--text2); color: var(--text2); }
+
+  /* COUNT STEPPER */
+  .count-stepper {
+    display: flex; align-items: center; gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg3);
+    flex-shrink: 0;
+  }
+  .count-stepper-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-size: 20px;
+    font-weight: 900;
+    width: 38px; height: 38px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s;
+    user-select: none;
+    font-family: var(--mono);
+  }
+  .count-stepper-btn:active { background: rgba(0,245,196,0.15); }
+  .count-stepper-btn.minus { color: var(--accent2); }
+  .count-stepper-btn.minus:active { background: rgba(255,107,107,0.15); }
+  .count-stepper .count-val {
+    width: 44px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 900;
+    font-family: var(--mono);
+    color: var(--text);
+    border: none;
+    background: none;
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    padding: 0;
+    -moz-appearance: textfield;
+  }
+  .count-stepper .count-val::-webkit-inner-spin-button,
+  .count-stepper .count-val::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+  /* FORM HINT */
+  .form-hint {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  /* REMAINING BADGE */
+  .remaining-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    padding: 0 16px 10px;
+  }
+  .remaining-badge .remain-val {
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--accent3);
+  }
+  .remaining-badge .remain-val.low { color: var(--accent2); }
+  .remaining-badge .remain-val.high { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="logo">
+      <div class="logo-icon">🎫</div>
+      <div>
+        <div class="logo-text">くじ巡回ノート</div>
+        <div class="logo-sub">ICHIBAN KUJI TRACKER</div>
+      </div>
+    </div>
+    <button class="btn btn-sm" onclick="openSettings()">⚙️</button>
+  </div>
+  <div class="header-stats">
+    <div class="stat-pill">🏪 店舗 <span class="val" id="stat-stores">0</span></div>
+    <div class="stat-pill">✨ 在庫あり <span class="val" id="stat-stocked">0</span></div>
+    <div class="stat-pill" id="current-kuji-stat">🎯 <span class="val" id="stat-kuji">-</span></div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- くじ選択 -->
+  <div class="kuji-selector">
+    <div class="kuji-selector-label">▸ 追跡中のくじ</div>
+    <div class="kuji-select-row">
+      <select id="kuji-select" onchange="selectKuji(this.value)">
+        <option value="">-- くじを選択 --</option>
+      </select>
+      <button class="btn btn-accent" onclick="openAddKuji()">＋</button>
+    </div>
+  </div>
+
+  <!-- フィルター -->
+  <div class="filter-tabs" id="filter-tabs">
+    <button class="tab-btn active" onclick="setFilter('all', this)">すべて</button>
+    <button class="tab-btn" onclick="setFilter('stock', this)">在庫あり</button>
+    <button class="tab-btn" onclick="setFilter('nostock', this)">完売</button>
+    <button class="tab-btn" onclick="setFilter('old', this)">情報古い</button>
+  </div>
+
+  <div id="stores-list"></div>
+</div>
+
+<!-- FAB -->
+<button class="fab" onclick="openAddStore()">＋</button>
+
+<!-- 店舗追加モーダル -->
+<div class="modal-overlay" id="modal-store">
+  <div class="modal">
+    <div class="modal-title">
+      <span id="modal-store-title">店舗を追加</span>
+      <button class="modal-close" onclick="closeModal('modal-store')">×</button>
+    </div>
+
+    <div class="form-row">
+      <div class="form-grid2">
+        <div>
+          <label class="form-label">CHAIN / チェーン</label>
+          <select id="f-chain" onchange="onChainChange()">
+          </select>
+        </div>
+        <div>
+          <label class="form-label">AREA / エリア</label>
+          <input type="text" id="f-area" placeholder="例：渋谷区">
+        </div>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="form-label">STORE NAME / 店名</label>
+      <div id="f-name-area">
+        <select id="f-name-select" onchange="onStoreNameSelect()" style="display:none;">
+          <option value="">-- 登録済みから選択 --</option>
+        </select>
+        <input type="text" id="f-name" placeholder="例：渋谷〇〇店" style="display:none;">
+        <button type="button" class="btn btn-sm" id="f-name-toggle" onclick="toggleNameMode()" style="margin-top:6px;">📝 新規入力に切替</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <label class="form-label">MEMO / メモ</label>
+      <input type="text" id="f-memo" placeholder="例：改札出て左すぐ">
+    </div>
+
+    <div class="form-row">
+      <label class="form-label">REMAINING / 残りくじ数</label>
+      <div class="count-stepper" style="width:fit-content;">
+        <button type="button" class="count-stepper-btn minus" onclick="stepRemaining(-1)">−</button>
+        <input class="count-val" type="number" min="0" id="f-remaining" value="0" oninput="this.value=Math.max(0,parseInt(this.value)||0)">
+        <button type="button" class="count-stepper-btn" onclick="stepRemaining(1)">＋</button>
+      </div>
+      <div class="form-hint">景品くじの合計枚数（はずれは除く）</div>
+    </div>
+
+    <div class="prizes-editor">
+      <label class="form-label">PRIZES / 賞の残り枚数</label>
+      <div id="prize-editor-rows"></div>
+      <button class="btn btn-sm" onclick="addPrizeRow()" style="margin-top:4px;">＋ 賞を追加</button>
+    </div>
+
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn" style="flex:1" onclick="closeModal('modal-store')">キャンセル</button>
+      <button class="btn btn-accent" style="flex:2" onclick="saveStore()">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- くじ追加モーダル -->
+<div class="modal-overlay" id="modal-kuji">
+  <div class="modal">
+    <div class="modal-title">
+      くじを追加
+      <button class="modal-close" onclick="closeModal('modal-kuji')">×</button>
+    </div>
+    <div class="form-row">
+      <label class="form-label">KUJI NAME / くじ名</label>
+      <input type="text" id="f-kuji-name" placeholder="例：鬼滅の刃 一番くじ 〇〇篇">
+    </div>
+    <div class="form-row">
+      <label class="form-label">CHAIN / 取り扱いコンビニ</label>
+      <div class="chain-chip-group" id="f-kuji-chains">
+        <label class="chain-chip"><input type="checkbox" value="711" checked><span class="chip-body chip-711">🏪 セブン</span></label>
+        <label class="chain-chip"><input type="checkbox" value="lw"><span class="chip-body chip-lw">🏪 ローソン</span></label>
+        <label class="chain-chip"><input type="checkbox" value="fm"><span class="chip-body chip-fm">🏪 ファミマ</span></label>
+        <label class="chain-chip"><input type="checkbox" value="mm"><span class="chip-body chip-mm">🏪 ミニストップ</span></label>
+        <label class="chain-chip"><input type="checkbox" value="other"><span class="chip-body chip-other">📦 その他</span></label>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">DEFAULT PRIZES / 賞のラインナップ（カンマ区切り）</label>
+      <input type="text" id="f-kuji-prizes" placeholder="例：A,B,C,D,E">
+    </div>
+    <div style="display:flex; gap:8px; margin-top:16px;">
+      <button class="btn" style="flex:1" onclick="closeModal('modal-kuji')">キャンセル</button>
+      <button class="btn btn-accent" style="flex:2" onclick="saveKuji()">追加</button>
+    </div>
+  </div>
+</div>
+
+<!-- 設定モーダル -->
+<div class="modal-overlay" id="modal-settings">
+  <div class="modal">
+    <div class="modal-title">
+      設定
+      <button class="modal-close" onclick="closeModal('modal-settings')">×</button>
+    </div>
+    <div id="kuji-manage-list"></div>
+    <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+      <button class="btn btn-danger" style="width:100%" onclick="clearAllData()">⚠️ 全データを削除</button>
+    </div>
+    <div style="margin-top:8px; font-size:11px; color:var(--text3); text-align:center;">
+      データはこのスマホ本体に保存されます
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA STORE =====
+let data = {
+  kujis: [],       // { id, name, prizes: ['A','B','C',...] }
+  stores: [],      // { id, kujiId, name, chain, area, memo, prizes: {A: 3, B: 1, ...}, updatedAt }
+  currentKujiId: null
+};
+
+function save() {
+  localStorage.setItem('kuji-tracker', JSON.stringify(data));
+}
+
+function load() {
+  const raw = localStorage.getItem('kuji-tracker');
+  if (raw) {
+    try { data = JSON.parse(raw); } catch(e) {}
+  }
+  // デフォルトくじがなければサンプル追加
+  if (data.kujis.length === 0) {
+    data.kujis.push({
+      id: uid(),
+      name: '鬼滅の刃 一番くじ',
+      prizes: ['A', 'B', 'C', 'D', 'E'],
+      chains: ['711', 'lw', 'fm']
+    });
+    save();
+  }
+  if (!data.currentKujiId && data.kujis.length > 0) {
+    data.currentKujiId = data.kujis[0].id;
+  }
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+}
+
+// ===== STATE =====
+let editingStoreId = null;
+let currentFilter = 'all';
+
+// ===== RENDER =====
+function render() {
+  renderKujiSelect();
+  renderStores();
+  renderStats();
+}
+
+function renderKujiSelect() {
+  const sel = document.getElementById('kuji-select');
+  sel.innerHTML = '<option value="">-- くじを選択 --</option>';
+  data.kujis.forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k.id;
+    opt.textContent = k.name;
+    if (k.id === data.currentKujiId) opt.selected = true;
+    sel.appendChild(opt);
+  });
+  document.getElementById('stat-kuji').textContent =
+    data.kujis.find(k => k.id === data.currentKujiId)?.name || '-';
+}
+
+function getStoreStockStatus(store) {
+  const total = Object.values(store.prizes || {}).reduce((a, b) => a + b, 0);
+  return total > 0;
+}
+
+function isOldData(store) {
+  if (!store.updatedAt) return false;
+  const diff = Date.now() - new Date(store.updatedAt).getTime();
+  return diff > 1000 * 60 * 60 * 6; // 6時間以上
+}
+
+function renderStores() {
+  const el = document.getElementById('stores-list');
+  const kuji = data.kujis.find(k => k.id === data.currentKujiId);
+
+  if (!kuji) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">🎯</div><div class="msg">くじを選択してください<br>「＋」ボタンでくじを追加できます</div></div>`;
+    return;
+  }
+
+  let stores = data.stores.filter(s => s.kujiId === data.currentKujiId);
+
+  if (currentFilter === 'stock') stores = stores.filter(s => getStoreStockStatus(s));
+  if (currentFilter === 'nostock') stores = stores.filter(s => !getStoreStockStatus(s));
+  if (currentFilter === 'old') stores = stores.filter(s => isOldData(s));
+
+  if (stores.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">🏪</div><div class="msg">店舗がまだありません<br>右下の「＋」ボタンで追加しましょう</div></div>`;
+    return;
+  }
+
+  // 在庫あり→古い→完売 の順にソート
+  stores.sort((a, b) => {
+    const aStock = getStoreStockStatus(a) ? 2 : 0;
+    const bStock = getStoreStockStatus(b) ? 2 : 0;
+    const aOld = isOldData(a) ? 1 : 0;
+    const bOld = isOldData(b) ? 1 : 0;
+    return (bStock - bOld) - (aStock - aOld);
+  });
+
+  const chainLabels = {
+    '711': ['7-Eleven', 'badge-711'],
+    'lw': ['Lawson', 'badge-lw'],
+    'fm': ['FamilyMart', 'badge-fm'],
+    'mm': ['Ministop', 'badge-mm'],
+    'other': ['Other', 'badge-other']
+  };
+
+  el.innerHTML = stores.map(store => {
+    const hasStock = getStoreStockStatus(store);
+    const old = isOldData(store);
+    const [chainName, chainClass] = chainLabels[store.chain] || ['Other', 'badge-other'];
+
+    const timeStr = store.updatedAt
+      ? formatTime(store.updatedAt)
+      : '未確認';
+    const timeClass = old ? 'old' : (store.updatedAt ? 'recent' : '');
+
+    const prizesHtml = (kuji.prizes || []).map(rank => {
+      const count = (store.prizes || {})[rank] || 0;
+      let countClass = 'zero';
+      if (count > 5) countClass = 'high';
+      else if (count > 2) countClass = 'mid';
+      else if (count > 0) countClass = 'low';
+      const chipClass = count > 0 ? 'has-stock' : 'no-stock';
+      const rankClass = 'rank-' + rank;
+
+      return `<div class="prize-chip ${chipClass}" onclick="updateCount('${store.id}','${rank}', event)">
+        <span class="prize-rank ${rankClass}">${rank}賞</span>
+        <div>
+          <div class="prize-count ${countClass}">${count}</div>
+          <div class="prize-unit">枚</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="store-card ${hasStock ? 'has-stock' : 'no-stock'}" id="store-${store.id}">
+      <div class="store-header">
+        <div class="store-info">
+          <div class="store-name">
+            ${escHtml(store.name)}
+            <span class="store-type-badge ${chainClass}">${chainName}</span>
+          </div>
+          ${store.area ? `<div class="store-location">📍 ${escHtml(store.area)}${store.memo ? ' · ' + escHtml(store.memo) : ''}</div>` : ''}
+        </div>
+        <div class="store-actions">
+          <button class="btn btn-sm" onclick="editStore('${store.id}')">✏️</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteStore('${store.id}')">🗑</button>
+        </div>
+      </div>
+      <div class="store-time ${timeClass}">
+        🕐 ${timeStr}
+      </div>
+      ${store.remaining != null && store.remaining > 0 ? `<div class="remaining-badge">🎫 残り <span class="remain-val ${store.remaining <= 5 ? 'low' : store.remaining >= 20 ? 'high' : ''}">${store.remaining}</span> 枚</div>` : ''}
+      <div class="prizes-section">
+        <div class="prizes-grid">${prizesHtml}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderStats() {
+  const stores = data.stores.filter(s => s.kujiId === data.currentKujiId);
+  document.getElementById('stat-stores').textContent = stores.length;
+  document.getElementById('stat-stocked').textContent = stores.filter(s => getStoreStockStatus(s)).length;
+}
+
+function formatTime(iso) {
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = now - d;
+  if (diff < 60000) return 'たった今';
+  if (diff < 3600000) return Math.floor(diff / 60000) + '分前';
+  if (diff < 86400000) return Math.floor(diff / 3600000) + '時間前';
+  return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ===== INTERACTIONS =====
+function selectKuji(id) {
+  data.currentKujiId = id || null;
+  save();
+  render();
+}
+
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderStores();
+}
+
+function updateCount(storeId, rank, ev) {
+  const store = data.stores.find(s => s.id === storeId);
+  if (!store) return;
+  if (!store.prizes) store.prizes = {};
+
+  const current = store.prizes[rank] || 0;
+  // ダブルタップで-1, 1タップで+1
+  // モーダルを出さずに直接+-
+  const now = Date.now();
+  if (!store._lastTap) store._lastTap = {};
+  if (store._lastTap[rank] && now - store._lastTap[rank] < 400) {
+    // ダブルタップ→-1
+    store.prizes[rank] = Math.max(0, current - 1);
+  } else {
+    // シングルタップ→+1
+    store.prizes[rank] = current + 1;
+  }
+  store._lastTap[rank] = now;
+  store.updatedAt = new Date().toISOString();
+  save();
+
+  // アニメーション
+  const el = ev.currentTarget;
+  el.classList.remove('flash');
+  void el.offsetWidth;
+  el.classList.add('flash');
+
+  renderStores();
+  renderStats();
+}
+
+// ===== MODALS =====
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// 外側タップで閉じる
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) closeModal(this.id);
+  });
+});
+
+// ===== ADD STORE =====
+let prizeRows = [];
+
+function openAddStore() {
+  editingStoreId = null;
+  document.getElementById('modal-store-title').textContent = '店舗を追加';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-name-select').value = '';
+  document.getElementById('f-area').value = '';
+  document.getElementById('f-memo').value = '';
+  document.getElementById('f-remaining').value = 0;
+
+  const kuji = data.kujis.find(k => k.id === data.currentKujiId);
+  const defaultChain = (kuji?.chains && kuji.chains.length > 0) ? kuji.chains[0] : '711';
+  updateChainOptions(kuji?.chains);
+  document.getElementById('f-chain').value = defaultChain;
+  updateStoreNameDropdown(defaultChain);
+
+  prizeRows = kuji ? kuji.prizes.map(r => ({ rank: r, count: 0 })) : [{ rank: 'A', count: 0 }];
+  renderPrizeEditor();
+  openModal('modal-store');
+}
+
+function updateChainOptions(kujiChains) {
+  const allChains = {
+    '711': 'セブン-イレブン',
+    'lw': 'ローソン',
+    'fm': 'ファミマ',
+    'mm': 'ミニストップ',
+    'other': 'その他'
+  };
+  const sel = document.getElementById('f-chain');
+  sel.innerHTML = '';
+  const chains = (kujiChains && kujiChains.length > 0) ? kujiChains : Object.keys(allChains);
+  chains.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    opt.textContent = allChains[c] || c;
+    sel.appendChild(opt);
+  });
+}
+
+function onChainChange() {
+  const chain = document.getElementById('f-chain').value;
+  updateStoreNameDropdown(chain);
+}
+
+let nameMode = 'new'; // 'select' or 'new'
+
+function updateStoreNameDropdown(chain) {
+  const sel = document.getElementById('f-name-select');
+  const inp = document.getElementById('f-name');
+  const btn = document.getElementById('f-name-toggle');
+
+  // 同チェーンの店名をユニークに収集
+  const names = [...new Set(
+    data.stores
+      .filter(s => s.chain === chain)
+      .map(s => s.name)
+  )].sort();
+
+  sel.innerHTML = '<option value="">-- 登録済みから選択 --</option>';
+  names.forEach(n => {
+    const opt = document.createElement('option');
+    opt.value = n;
+    opt.textContent = n;
+    sel.appendChild(opt);
+  });
+
+  if (names.length > 0) {
+    nameMode = 'select';
+    sel.style.display = '';
+    inp.style.display = 'none';
+    inp.value = '';
+    btn.textContent = '📝 新規入力に切替';
+    btn.style.display = '';
+  } else {
+    nameMode = 'new';
+    sel.style.display = 'none';
+    inp.style.display = '';
+    inp.value = '';
+    btn.style.display = 'none';
+  }
+}
+
+function toggleNameMode() {
+  const sel = document.getElementById('f-name-select');
+  const inp = document.getElementById('f-name');
+  const btn = document.getElementById('f-name-toggle');
+  if (nameMode === 'select') {
+    nameMode = 'new';
+    sel.style.display = 'none';
+    inp.style.display = '';
+    inp.value = '';
+    btn.textContent = '📋 登録済みから選択';
+  } else {
+    nameMode = 'select';
+    sel.style.display = '';
+    inp.style.display = 'none';
+    inp.value = '';
+    btn.textContent = '📝 新規入力に切替';
+  }
+}
+
+function getStoreName() {
+  if (nameMode === 'select') {
+    return document.getElementById('f-name-select').value.trim();
+  }
+  return document.getElementById('f-name').value.trim();
+}
+
+function setStoreName(name, chain) {
+  const names = [...new Set(data.stores.filter(s => s.chain === chain).map(s => s.name))];
+  if (names.includes(name)) {
+    nameMode = 'select';
+    document.getElementById('f-name-select').style.display = '';
+    document.getElementById('f-name').style.display = 'none';
+    document.getElementById('f-name-select').value = name;
+    document.getElementById('f-name-toggle').textContent = '📝 新規入力に切替';
+    document.getElementById('f-name-toggle').style.display = '';
+  } else {
+    nameMode = 'new';
+    document.getElementById('f-name-select').style.display = 'none';
+    document.getElementById('f-name').style.display = '';
+    document.getElementById('f-name').value = name;
+    if (names.length > 0) {
+      document.getElementById('f-name-toggle').textContent = '📋 登録済みから選択';
+      document.getElementById('f-name-toggle').style.display = '';
+    } else {
+      document.getElementById('f-name-toggle').style.display = 'none';
+    }
+  }
+}
+
+function onStoreNameSelect() {
+  const name = document.getElementById('f-name-select').value;
+  const chain = document.getElementById('f-chain').value;
+  if (!name) return;
+  const match = data.stores.find(s => s.chain === chain && s.name === name);
+  if (match) {
+    const areaEl = document.getElementById('f-area');
+    const memoEl = document.getElementById('f-memo');
+    if (!areaEl.value && match.area) areaEl.value = match.area;
+    if (!memoEl.value && match.memo) memoEl.value = match.memo;
+  }
+}
+
+function stepRemaining(delta) {
+  const el = document.getElementById('f-remaining');
+  el.value = Math.max(0, (parseInt(el.value) || 0) + delta);
+}
+
+function editStore(id) {
+  const store = data.stores.find(s => s.id === id);
+  if (!store) return;
+  editingStoreId = id;
+  document.getElementById('modal-store-title').textContent = '店舗を編集';
+  document.getElementById('f-area').value = store.area || '';
+  document.getElementById('f-memo').value = store.memo || '';
+  document.getElementById('f-remaining').value = store.remaining || 0;
+
+  const kuji = data.kujis.find(k => k.id === data.currentKujiId);
+  updateChainOptions(kuji?.chains);
+  document.getElementById('f-chain').value = store.chain || '711';
+  updateStoreNameDropdown(store.chain || '711');
+  setStoreName(store.name, store.chain || '711');
+
+  const prizes = store.prizes || {};
+  prizeRows = (kuji?.prizes || Object.keys(prizes)).map(r => ({
+    rank: r, count: prizes[r] || 0
+  }));
+  renderPrizeEditor();
+  openModal('modal-store');
+}
+
+function renderPrizeEditor() {
+  const container = document.getElementById('prize-editor-rows');
+  container.innerHTML = prizeRows.map((p, i) => `
+    <div class="prize-editor-row">
+      <input class="rank-input" type="text" value="${escHtml(p.rank)}" placeholder="賞" oninput="prizeRows[${i}].rank=this.value">
+      <div class="count-stepper">
+        <button type="button" class="count-stepper-btn minus" onclick="stepCount(${i},-1)">−</button>
+        <input class="count-val" type="number" min="0" value="${p.count}" oninput="prizeRows[${i}].count=Math.max(0,parseInt(this.value)||0)">
+        <button type="button" class="count-stepper-btn" onclick="stepCount(${i},1)">＋</button>
+      </div>
+      <button class="remove-prize-btn" onclick="removePrizeRow(${i})">×</button>
+    </div>
+  `).join('');
+}
+
+function stepCount(i, delta) {
+  prizeRows[i].count = Math.max(0, prizeRows[i].count + delta);
+  renderPrizeEditor();
+}
+
+function addPrizeRow() {
+  const nextRank = getNextRank();
+  prizeRows.push({ rank: nextRank, count: 0 });
+  renderPrizeEditor();
+}
+
+function getNextRank() {
+  const used = prizeRows.map(p => p.rank.toUpperCase());
+  // A〜Zで未使用の次のアルファベットを返す
+  for (let i = 0; i < 26; i++) {
+    const letter = String.fromCharCode(65 + i);
+    if (!used.includes(letter)) return letter;
+  }
+  return '';
+}
+
+function removePrizeRow(i) {
+  prizeRows.splice(i, 1);
+  renderPrizeEditor();
+}
+
+function saveStore() {
+  const name = getStoreName();
+  if (!name) { alert('店名を入力してください'); return; }
+  if (!data.currentKujiId) { alert('くじを選択してください'); return; }
+
+  const prizes = {};
+  prizeRows.forEach(p => {
+    if (p.rank) prizes[p.rank] = p.count;
+  });
+
+  if (editingStoreId) {
+    const store = data.stores.find(s => s.id === editingStoreId);
+    if (store) {
+      store.name = name;
+      store.chain = document.getElementById('f-chain').value;
+      store.area = document.getElementById('f-area').value.trim();
+      store.memo = document.getElementById('f-memo').value.trim();
+      store.remaining = parseInt(document.getElementById('f-remaining').value) || 0;
+      store.prizes = prizes;
+      store.updatedAt = new Date().toISOString();
+    }
+  } else {
+    data.stores.push({
+      id: uid(),
+      kujiId: data.currentKujiId,
+      name,
+      chain: document.getElementById('f-chain').value,
+      area: document.getElementById('f-area').value.trim(),
+      memo: document.getElementById('f-memo').value.trim(),
+      remaining: parseInt(document.getElementById('f-remaining').value) || 0,
+      prizes,
+      updatedAt: new Date().toISOString()
+    });
+  }
+  save();
+  closeModal('modal-store');
+  render();
+}
+
+function deleteStore(id) {
+  if (!confirm('この店舗を削除しますか？')) return;
+  data.stores = data.stores.filter(s => s.id !== id);
+  save();
+  render();
+}
+
+// ===== ADD KUJI =====
+function openAddKuji() {
+  document.getElementById('f-kuji-name').value = '';
+  document.getElementById('f-kuji-prizes').value = 'A,B,C,D,E';
+  // チェーンチップをリセット（セブンのみON）
+  document.querySelectorAll('#f-kuji-chains input[type="checkbox"]').forEach(cb => {
+    cb.checked = (cb.value === '711');
+  });
+  openModal('modal-kuji');
+}
+
+function saveKuji() {
+  const name = document.getElementById('f-kuji-name').value.trim();
+  if (!name) { alert('くじ名を入力してください'); return; }
+  const prizesRaw = document.getElementById('f-kuji-prizes').value;
+  const prizes = prizesRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+  const chains = [];
+  document.querySelectorAll('#f-kuji-chains input[type="checkbox"]:checked').forEach(cb => {
+    chains.push(cb.value);
+  });
+
+  const kuji = { id: uid(), name, prizes, chains };
+  data.kujis.push(kuji);
+  data.currentKujiId = kuji.id;
+  save();
+  closeModal('modal-kuji');
+  render();
+}
+
+// ===== SETTINGS =====
+function openSettings() {
+  renderKujiManageList();
+  openModal('modal-settings');
+}
+
+function renderKujiManageList() {
+  const el = document.getElementById('kuji-manage-list');
+  if (data.kujis.length === 0) {
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:16px;">くじがありません</div>';
+    return;
+  }
+  el.innerHTML = '<div class="form-label" style="margin-bottom:8px;">登録済みくじ一覧</div>' +
+    data.kujis.map(k => {
+      const cnt = data.stores.filter(s => s.kujiId === k.id).length;
+      const chainLabelsMap = { '711': '7-11', 'lw': 'ローソン', 'fm': 'ファミマ', 'mm': 'ミニストップ', 'other': 'その他' };
+      const chainBadgeMap = { '711': 'badge-711', 'lw': 'badge-lw', 'fm': 'badge-fm', 'mm': 'badge-mm', 'other': 'badge-other' };
+      const chainsHtml = (k.chains || []).map(c =>
+        `<span class="store-type-badge ${chainBadgeMap[c] || 'badge-other'}" style="font-size:9px;margin-right:2px;">${chainLabelsMap[c] || c}</span>`
+      ).join('');
+      return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700;">${escHtml(k.name)}</div>
+          <div style="font-size:11px;color:var(--text2);margin-top:2px;">店舗 ${cnt}件 ${chainsHtml}</div>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="deleteKuji('${k.id}')">削除</button>
+      </div>`;
+    }).join('');
+}
+
+function deleteKuji(id) {
+  const kuji = data.kujis.find(k => k.id === id);
+  if (!kuji) return;
+  const cnt = data.stores.filter(s => s.kujiId === id).length;
+  if (!confirm(`「${kuji.name}」を削除しますか？\n（関連店舗 ${cnt}件も削除されます）`)) return;
+  data.kujis = data.kujis.filter(k => k.id !== id);
+  data.stores = data.stores.filter(s => s.kujiId !== id);
+  if (data.currentKujiId === id) {
+    data.currentKujiId = data.kujis[0]?.id || null;
+  }
+  save();
+  render();
+  renderKujiManageList();
+}
+
+function clearAllData() {
+  if (!confirm('全データを削除します。この操作は取り消せません。')) return;
+  data = { kujis: [], stores: [], currentKujiId: null };
+  save();
+  load();
+  closeModal('modal-settings');
+  render();
+}
+
+// ===== BOOT =====
+load();
+render();
+</script>
+</body>
+</html>
