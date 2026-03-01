@@ -6,25 +6,36 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="くじ巡回">
-<meta name="theme-color" content="#0a0a0f">
+<meta name="theme-color" content="#08080d">
 <title>くじ巡回ノート</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0a0f;
-    --bg2: #12121a;
-    --bg3: #1a1a26;
-    --card: #16161f;
-    --border: #2a2a3d;
-    --accent: #00f5c4;
-    --accent2: #ff6b6b;
-    --accent3: #ffd93d;
-    --text: #e8e8f0;
-    --text2: #888899;
-    --text3: #555566;
+    --bg: #08080d;
+    --bg2: #0e0e16;
+    --bg3: #161622;
+    --card: #111119;
+    --card-hover: #17172a;
+    --border: #22223a;
+    --border-hi: #33335a;
+    --accent: #00e8b8;
+    --accent-glow: rgba(0,232,184,0.15);
+    --accent2: #ff5a5a;
+    --accent2-glow: rgba(255,90,90,0.12);
+    --accent3: #ffcc00;
+    --accent3-glow: rgba(255,204,0,0.12);
+    --blue: #4d9fff;
+    --purple: #b488ff;
+    --text: #e4e4f0;
+    --text2: #7e7e96;
+    --text3: #4a4a60;
     --font: 'Zen Kaku Gothic New', sans-serif;
-    --mono: 'Share Tech Mono', monospace;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 14px;
+    --radius-sm: 10px;
+    --shadow: 0 2px 20px rgba(0,0,0,0.4);
+    --safe-b: env(safe-area-inset-bottom, 0px);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -33,20 +44,22 @@
     background: var(--bg);
     color: var(--text);
     font-family: var(--font);
-    min-height: 100vh;
-    padding-bottom: 100px;
+    min-height: 100dvh;
+    padding-bottom: calc(90px + var(--safe-b));
     overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* HEADER */
+  /* ====== HEADER ====== */
   .header {
-    background: var(--bg2);
+    background: linear-gradient(180deg, var(--bg2) 0%, rgba(14,14,22,0.92) 100%);
     border-bottom: 1px solid var(--border);
-    padding: 16px 20px 12px;
+    padding: 14px 16px 10px;
     position: sticky;
     top: 0;
     z-index: 100;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
   .header-top {
     display: flex;
@@ -59,116 +72,136 @@
     gap: 10px;
   }
   .logo-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--accent), #00a8ff);
-    border-radius: 10px;
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--accent), var(--blue));
+    border-radius: 9px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+    font-size: 16px;
+    box-shadow: 0 2px 12px rgba(0,232,184,0.25);
   }
   .logo-text {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 900;
     letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 60%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
   .logo-sub {
-    font-size: 10px;
-    color: var(--text2);
+    font-size: 9px;
+    color: var(--text3);
     font-family: var(--mono);
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    margin-top: -1px;
   }
   .header-stats {
     display: flex;
-    gap: 16px;
-    margin-top: 12px;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .header-stats::-webkit-scrollbar { display: none; }
   .stat-pill {
     background: var(--bg3);
     border: 1px solid var(--border);
     border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 11px;
+    padding: 3px 10px;
+    font-size: 10px;
     color: var(--text2);
     font-family: var(--mono);
-    display: flex; align-items: center; gap: 6px;
+    display: flex; align-items: center; gap: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
-  .stat-pill .val { color: var(--accent); font-weight: 700; font-size: 13px; }
+  .stat-pill .val { color: var(--accent); font-weight: 700; font-size: 12px; }
 
-  /* MAIN */
-  .main { padding: 16px; }
+  /* ====== MAIN ====== */
+  .main { padding: 12px 14px; }
 
-  /* KUJI SELECTOR */
+  /* ====== KUJI SELECTOR ====== */
   .kuji-selector {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 16px;
+    border-radius: var(--radius);
+    padding: 14px;
+    margin-bottom: 12px;
   }
   .kuji-selector-label {
-    font-size: 10px;
+    font-size: 9px;
     font-family: var(--mono);
-    color: var(--text2);
+    color: var(--text3);
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
   .kuji-select-row {
     display: flex; gap: 8px; align-items: center;
   }
-  select, input {
+
+  /* ====== FORMS ====== */
+  select, input[type="text"], input[type="number"] {
     background: var(--bg3);
     border: 1px solid var(--border);
     color: var(--text);
-    border-radius: 10px;
-    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    padding: 9px 12px;
     font-family: var(--font);
     font-size: 14px;
     outline: none;
     width: 100%;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
   select:focus, input:focus {
     border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-glow);
   }
   select option { background: var(--bg3); }
 
-  /* BTN */
+  /* ====== BUTTON ====== */
   .btn {
     background: var(--bg3);
     border: 1px solid var(--border);
     color: var(--text);
-    border-radius: 10px;
-    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    padding: 9px 14px;
     font-family: var(--font);
     font-size: 13px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.12s;
     white-space: nowrap;
-    display: flex; align-items: center; gap: 6px;
+    display: inline-flex; align-items: center; gap: 5px;
+    user-select: none;
   }
-  .btn:active { transform: scale(0.96); }
+  .btn:active { transform: scale(0.96); opacity: 0.85; }
   .btn-accent {
     background: var(--accent);
     border-color: var(--accent);
     color: #000;
   }
-  .btn-accent:active { background: #00d4a8; }
+  .btn-accent:active { background: #00ccaa; }
   .btn-danger {
     background: transparent;
     border-color: var(--accent2);
     color: var(--accent2);
   }
-  .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
-
-  /* SECTION TITLE */
-  .section-title {
-    font-size: 11px;
-    font-family: var(--mono);
+  .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 8px; }
+  .btn-ghost {
+    background: transparent;
+    border-color: transparent;
     color: var(--text2);
+  }
+
+  /* ====== SECTION ====== */
+  .section-title {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text3);
     letter-spacing: 2px;
     text-transform: uppercase;
-    margin: 20px 0 10px;
+    margin: 16px 0 8px;
     display: flex; align-items: center; gap: 8px;
   }
   .section-title::after {
@@ -178,182 +211,220 @@
     background: var(--border);
   }
 
-  /* STORE CARD */
+  /* ====== PRIZE SUMMARY BAR ====== */
+  .prize-summary {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 10px 0 6px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .prize-summary::-webkit-scrollbar { display: none; }
+  .prize-summary-chip {
+    flex-shrink: 0;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 10px;
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px;
+    font-family: var(--mono);
+  }
+  .prize-summary-chip .ps-rank { font-weight: 700; }
+  .prize-summary-chip .ps-count { color: var(--accent); font-weight: 700; }
+  .prize-summary-chip.zero .ps-count { color: var(--text3); }
+
+  /* ====== STORE CARD ====== */
   .store-card {
     background: var(--card);
     border: 1px solid var(--border);
-    border-radius: 16px;
-    margin-bottom: 12px;
+    border-radius: var(--radius);
+    margin-bottom: 10px;
     overflow: hidden;
-    transition: border-color 0.2s;
+    transition: border-color 0.25s, opacity 0.25s, box-shadow 0.25s;
+    position: relative;
   }
-  .store-card.has-stock { border-color: rgba(0,245,196,0.3); }
-  .store-card.no-stock { opacity: 0.5; }
+  .store-card.has-stock {
+    border-color: rgba(0,232,184,0.2);
+    box-shadow: 0 0 20px rgba(0,232,184,0.04);
+  }
+  .store-card.no-stock { opacity: 0.45; }
+  .store-card.old-data { border-color: rgba(255,90,90,0.2); }
 
   .store-header {
-    padding: 14px 16px;
+    padding: 12px 14px 6px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 10px;
+    gap: 8px;
   }
-  .store-info { flex: 1; }
+  .store-info { flex: 1; min-width: 0; }
+  .store-name-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+  }
   .store-name {
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 3px;
-    display: flex; align-items: center; gap: 8px;
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .store-type-badge {
-    font-size: 10px;
+    font-size: 9px;
     font-family: var(--mono);
-    padding: 2px 8px;
+    padding: 2px 7px;
     border-radius: 4px;
-    font-weight: 400;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
   }
-  .badge-711 { background: rgba(255,107,107,0.2); color: #ff6b6b; }
-  .badge-lw { background: rgba(0,168,255,0.2); color: #00a8ff; }
-  .badge-fm { background: rgba(0,245,196,0.2); color: var(--accent); }
-  .badge-mm { background: rgba(255,217,61,0.2); color: var(--accent3); }
-  .badge-other { background: rgba(136,136,153,0.2); color: var(--text2); }
+  .badge-711 { background: rgba(255,90,90,0.15); color: #ff7070; }
+  .badge-lw { background: rgba(77,159,255,0.15); color: var(--blue); }
+  .badge-fm { background: rgba(0,232,184,0.15); color: var(--accent); }
+  .badge-mm { background: rgba(255,204,0,0.15); color: var(--accent3); }
+  .badge-other { background: rgba(126,126,150,0.15); color: var(--text2); }
 
-  .store-location {
-    font-size: 12px;
-    color: var(--text2);
-    display: flex; align-items: center; gap: 4px;
-  }
-  .store-actions { display: flex; gap: 6px; flex-shrink: 0; }
-
-  .store-time {
-    padding: 0 16px 10px;
+  .store-meta {
     font-size: 11px;
-    color: var(--text3);
-    font-family: var(--mono);
-    display: flex; align-items: center; gap: 6px;
+    color: var(--text2);
+    margin-top: 3px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .store-time.recent { color: var(--accent); }
-  .store-time.old { color: var(--accent2); }
+  .store-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .store-actions .btn-sm { padding: 4px 8px; font-size: 11px; }
 
-  /* PRIZES */
+  .store-status-row {
+    padding: 2px 14px 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
+  .time-tag { display: inline-flex; align-items: center; gap: 3px; }
+  .time-tag.recent { color: var(--accent); }
+  .time-tag.old { color: var(--accent2); }
+  .remain-tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 1px 7px;
+    border-radius: 8px;
+    background: var(--bg3);
+  }
+  .remain-tag .rv { font-weight: 700; font-size: 12px; }
+  .remain-tag .rv.low { color: var(--accent2); }
+  .remain-tag .rv.mid { color: var(--accent3); }
+  .remain-tag .rv.high { color: var(--accent); }
+
+  /* ====== PRIZES GRID ====== */
   .prizes-section {
     border-top: 1px solid var(--border);
-    padding: 12px 16px;
+    padding: 10px 12px;
   }
   .prizes-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
   }
   .prize-chip {
     background: var(--bg3);
     border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    padding: 6px 10px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     cursor: pointer;
-    transition: all 0.15s;
-    min-width: 80px;
+    transition: all 0.12s;
+    min-width: 72px;
+    position: relative;
+    user-select: none;
+    -webkit-user-select: none;
   }
-  .prize-chip:active { transform: scale(0.95); }
-  .prize-chip.has-stock { border-color: rgba(0,245,196,0.4); background: rgba(0,245,196,0.06); }
-  .prize-chip.no-stock { opacity: 0.4; }
+  .prize-chip:active { transform: scale(0.94); }
+  .prize-chip.has-stock {
+    border-color: rgba(0,232,184,0.3);
+    background: rgba(0,232,184,0.04);
+  }
+  .prize-chip.no-stock { opacity: 0.35; }
   .prize-rank {
     font-family: var(--mono);
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 700;
     line-height: 1;
   }
-  .rank-A { color: #ffd93d; }
+  .rank-A { color: #ffcc00; }
   .rank-B { color: #ff9f43; }
-  .rank-C { color: #c8a4ff; }
+  .rank-C { color: var(--purple); }
   .rank-D { color: var(--text2); }
   .rank-E { color: var(--text3); }
-  .rank-LAST, .rank-ラスト { color: #ff6b6b; }
+  .rank-LAST, .rank-ラスト { color: var(--accent2); }
   .prize-count {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 900;
+    font-family: var(--mono);
     line-height: 1;
   }
   .prize-count.zero { color: var(--text3); }
   .prize-count.low { color: var(--accent2); }
   .prize-count.mid { color: var(--accent3); }
   .prize-count.high { color: var(--accent); }
-  .prize-unit { font-size: 10px; color: var(--text3); }
+  .prize-unit { font-size: 9px; color: var(--text3); font-family: var(--mono); }
 
-  /* ADD STORE FORM */
-  .add-form {
-    background: var(--card);
-    border: 1px solid var(--accent);
-    border-radius: 16px;
-    padding: 16px;
-    margin-bottom: 12px;
-    animation: slideIn 0.2s ease;
+  /* tap hint ripple */
+  .prize-chip .tap-hint {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
   }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(-8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .form-row { margin-bottom: 10px; }
-  .form-label {
-    font-size: 10px;
-    font-family: var(--mono);
-    color: var(--text2);
-    letter-spacing: 1px;
-    margin-bottom: 6px;
-    display: block;
-  }
-  .form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .prize-chip.flash-plus .tap-hint { background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); opacity: 1; }
+  .prize-chip.flash-minus .tap-hint { background: radial-gradient(circle, var(--accent2-glow) 0%, transparent 70%); opacity: 1; }
 
-  /* PRIZES EDITOR */
-  .prizes-editor { margin-top: 10px; }
-  .prize-editor-row {
-    display: flex; gap: 8px; align-items: center;
-    margin-bottom: 8px;
-  }
-  .prize-editor-row .rank-input { width: 70px; flex-shrink: 0; text-align: center; }
-  .prize-editor-row .count-input { width: 80px; flex-shrink: 0; text-align: center; }
-  .remove-prize-btn {
-    background: none;
-    border: none;
-    color: var(--text3);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 4px;
-    line-height: 1;
-  }
-
-  /* FAB */
+  /* ====== FAB ====== */
   .fab {
     position: fixed;
-    bottom: 24px;
-    right: 20px;
+    bottom: calc(20px + var(--safe-b));
+    right: 16px;
     z-index: 200;
-    background: var(--accent);
+    background: linear-gradient(135deg, var(--accent), #00b8d4);
     color: #000;
     border: none;
-    border-radius: 50%;
-    width: 58px; height: 58px;
-    font-size: 28px;
+    border-radius: 16px;
+    width: 54px; height: 54px;
+    font-size: 26px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 24px rgba(0,245,196,0.4);
+    box-shadow: 0 4px 24px rgba(0,232,184,0.35);
     transition: all 0.15s;
     font-family: var(--font);
     font-weight: 900;
   }
-  .fab:active { transform: scale(0.92); }
+  .fab:active { transform: scale(0.9); }
 
-  /* MODAL */
+  /* ====== MODAL ====== */
   .modal-overlay {
     position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     z-index: 300;
     display: flex; align-items: flex-end;
     opacity: 0; pointer-events: none;
-    transition: opacity 0.2s;
+    transition: opacity 0.25s;
   }
   .modal-overlay.open { opacity: 1; pointer-events: all; }
   .modal {
@@ -362,105 +433,76 @@
     border-bottom: none;
     border-radius: 20px 20px 0 0;
     width: 100%;
-    max-height: 90vh;
+    max-height: 88dvh;
     overflow-y: auto;
-    padding: 20px;
-    padding-bottom: calc(20px + env(safe-area-inset-bottom));
-    transform: translateY(40px);
-    transition: transform 0.3s ease;
+    padding: 8px 18px 18px;
+    padding-bottom: calc(18px + var(--safe-b));
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
   }
   .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-handle {
+    width: 36px; height: 4px;
+    background: var(--border-hi);
+    border-radius: 2px;
+    margin: 6px auto 14px;
+  }
   .modal-title {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 900;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     display: flex; justify-content: space-between; align-items: center;
   }
   .modal-close {
     background: var(--bg3);
     border: 1px solid var(--border);
-    color: var(--text);
+    color: var(--text2);
     border-radius: 50%;
-    width: 30px; height: 30px;
-    font-size: 16px;
+    width: 28px; height: 28px;
+    font-size: 14px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
   }
 
-  /* EMPTY STATE */
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text3);
-  }
-  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-  .empty-state .msg { font-size: 14px; line-height: 1.6; }
-
-  /* FILTER TABS */
-  .filter-tabs {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 4px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    -webkit-overflow-scrolling: touch;
-  }
-  .filter-tabs::-webkit-scrollbar { display: none; }
-  .tab-btn {
-    background: var(--bg3);
-    border: 1px solid var(--border);
+  /* ====== FORM ====== */
+  .form-row { margin-bottom: 10px; }
+  .form-label {
+    font-size: 10px;
+    font-family: var(--mono);
     color: var(--text2);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-family: var(--font);
-    white-space: nowrap;
-    cursor: pointer;
-    transition: all 0.15s;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    display: block;
   }
-  .tab-btn.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #000;
-    font-weight: 700;
-  }
-
-  /* UPDATE ANIMATION */
-  @keyframes flash {
-    0% { background: rgba(0,245,196,0.2); }
-    100% { background: transparent; }
-  }
-  .flash { animation: flash 0.4s ease; }
-
-  /* CHAIN CHIPS */
-  .chain-chip-group {
-    display: flex; flex-wrap: wrap; gap: 8px;
-  }
-  .chain-chip input[type="checkbox"] { display: none; }
-  .chip-body {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 7px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    border: 1.5px solid var(--border);
-    background: var(--bg3);
+  .form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .form-hint {
+    font-size: 10px;
     color: var(--text3);
-    transition: all 0.15s;
-    user-select: none;
+    margin-top: 3px;
   }
-  .chain-chip input:checked + .chip-711 { background: rgba(255,107,107,0.15); border-color: #ff6b6b; color: #ff6b6b; }
-  .chain-chip input:checked + .chip-lw  { background: rgba(0,168,255,0.15); border-color: #00a8ff; color: #00a8ff; }
-  .chain-chip input:checked + .chip-fm  { background: rgba(0,245,196,0.15); border-color: var(--accent); color: var(--accent); }
-  .chain-chip input:checked + .chip-mm  { background: rgba(255,217,61,0.15); border-color: var(--accent3); color: var(--accent3); }
-  .chain-chip input:checked + .chip-other { background: rgba(136,136,153,0.15); border-color: var(--text2); color: var(--text2); }
 
-  /* COUNT STEPPER */
+  /* ====== PRIZES EDITOR ====== */
+  .prizes-editor { margin-top: 10px; }
+  .prize-editor-row {
+    display: flex; gap: 6px; align-items: center;
+    margin-bottom: 6px;
+  }
+  .prize-editor-row .rank-input { width: 60px; flex-shrink: 0; text-align: center; font-weight: 700; }
+  .remove-prize-btn {
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+  }
+
+  /* ====== COUNT STEPPER ====== */
   .count-stepper {
-    display: flex; align-items: center; gap: 0;
+    display: flex; align-items: center;
     border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     overflow: hidden;
     background: var(--bg3);
     flex-shrink: 0;
@@ -469,23 +511,23 @@
     background: none;
     border: none;
     color: var(--accent);
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 900;
-    width: 38px; height: 38px;
+    width: 36px; height: 36px;
     cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.12s;
+    transition: background 0.1s;
     user-select: none;
     font-family: var(--mono);
   }
-  .count-stepper-btn:active { background: rgba(0,245,196,0.15); }
+  .count-stepper-btn:active { background: var(--accent-glow); }
   .count-stepper-btn.minus { color: var(--accent2); }
-  .count-stepper-btn.minus:active { background: rgba(255,107,107,0.15); }
+  .count-stepper-btn.minus:active { background: var(--accent2-glow); }
   .count-stepper .count-val {
-    width: 44px;
+    width: 42px;
     text-align: center;
-    font-size: 16px;
-    font-weight: 900;
+    font-size: 15px;
+    font-weight: 700;
     font-family: var(--mono);
     color: var(--text);
     border: none;
@@ -498,30 +540,198 @@
   .count-stepper .count-val::-webkit-inner-spin-button,
   .count-stepper .count-val::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-  /* FORM HINT */
-  .form-hint {
-    font-size: 11px;
+  /* ====== CHAIN CHIPS ====== */
+  .chain-chip-group { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chain-chip input[type="checkbox"] { display: none; }
+  .chip-body {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: var(--bg3);
     color: var(--text3);
-    margin-top: 4px;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .chain-chip input:checked + .chip-711 { background: rgba(255,90,90,0.12); border-color: #ff7070; color: #ff7070; }
+  .chain-chip input:checked + .chip-lw  { background: rgba(77,159,255,0.12); border-color: var(--blue); color: var(--blue); }
+  .chain-chip input:checked + .chip-fm  { background: rgba(0,232,184,0.12); border-color: var(--accent); color: var(--accent); }
+  .chain-chip input:checked + .chip-mm  { background: rgba(255,204,0,0.12); border-color: var(--accent3); color: var(--accent3); }
+  .chain-chip input:checked + .chip-other { background: rgba(126,126,150,0.12); border-color: var(--text2); color: var(--text2); }
+
+  /* ====== FILTER TABS ====== */
+  .filter-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 2px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .filter-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text3);
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-family: var(--font);
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
+  .tab-btn .tab-count {
+    font-family: var(--mono);
+    font-size: 10px;
+    margin-left: 2px;
+    opacity: 0.7;
   }
 
-  /* REMAINING BADGE */
-  .remaining-badge {
-    display: inline-flex;
+  /* ====== EMPTY STATE ====== */
+  .empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--text3);
+  }
+  .empty-state .icon { font-size: 40px; margin-bottom: 10px; opacity: 0.6; }
+  .empty-state .msg { font-size: 13px; line-height: 1.7; }
+
+  /* ====== TOAST ====== */
+  .toast {
+    position: fixed;
+    bottom: calc(84px + var(--safe-b));
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg3);
+    border: 1px solid var(--border-hi);
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.plus { border-color: var(--accent); }
+  .toast.minus { border-color: var(--accent2); }
+
+  /* ====== SETTINGS ====== */
+  .settings-section {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .settings-section:last-child { border-bottom: none; }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 6px 0;
+  }
+  .settings-label { font-size: 13px; color: var(--text); }
+  .settings-val { font-size: 12px; font-family: var(--mono); color: var(--text2); }
+  .data-bar {
+    height: 4px;
+    background: var(--bg3);
+    border-radius: 2px;
+    margin-top: 6px;
+    overflow: hidden;
+  }
+  .data-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+  .data-bar-fill.warn { background: var(--accent3); }
+  .data-bar-fill.danger { background: var(--accent2); }
+
+  /* ====== BACKUP ====== */
+  .backup-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    display: flex;
     align-items: center;
-    gap: 4px;
-    font-family: var(--mono);
-    font-size: 12px;
-    color: var(--text2);
-    padding: 0 16px 10px;
+    gap: 10px;
+    transition: border-color 0.15s;
   }
-  .remaining-badge .remain-val {
-    font-weight: 900;
+  .backup-card:last-child { margin-bottom: 0; }
+  .backup-card.auto { border-left: 3px solid var(--blue); }
+  .backup-card.manual { border-left: 3px solid var(--accent); }
+  .backup-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
     font-size: 14px;
-    color: var(--accent3);
+    flex-shrink: 0;
   }
-  .remaining-badge .remain-val.low { color: var(--accent2); }
-  .remaining-badge .remain-val.high { color: var(--accent); }
+  .backup-icon.auto { background: rgba(77,159,255,0.12); }
+  .backup-icon.manual { background: var(--accent-glow); }
+  .backup-info { flex: 1; min-width: 0; }
+  .backup-title {
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .backup-meta {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--text3);
+    margin-top: 2px;
+  }
+  .backup-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
+  .backup-banner {
+    background: linear-gradient(135deg, rgba(255,204,0,0.08), rgba(255,90,90,0.08));
+    border: 1px solid rgba(255,204,0,0.25);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: fadeIn 0.3s ease;
+  }
+  .backup-banner .bb-icon { font-size: 20px; flex-shrink: 0; }
+  .backup-banner .bb-text { flex: 1; font-size: 12px; color: var(--accent3); line-height: 1.4; }
+  .backup-banner .bb-text strong { color: var(--text); }
+  .backup-banner .btn { flex-shrink: 0; }
+
+  .backup-empty {
+    text-align: center;
+    padding: 16px;
+    color: var(--text3);
+    font-size: 12px;
+  }
+
+  /* ====== ANIMATIONS ====== */
+  @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .store-card { animation: slideUp 0.3s ease both; }
+  .store-card:nth-child(1) { animation-delay: 0s; }
+  .store-card:nth-child(2) { animation-delay: 0.04s; }
+  .store-card:nth-child(3) { animation-delay: 0.08s; }
+  .store-card:nth-child(4) { animation-delay: 0.12s; }
+  .store-card:nth-child(5) { animation-delay: 0.16s; }
 </style>
 </head>
 <body>
@@ -538,14 +748,16 @@
     <button class="btn btn-sm" onclick="openSettings()">⚙️</button>
   </div>
   <div class="header-stats">
-    <div class="stat-pill">🏪 店舗 <span class="val" id="stat-stores">0</span></div>
+    <div class="stat-pill">🏪 <span class="val" id="stat-stores">0</span></div>
     <div class="stat-pill">✨ 在庫あり <span class="val" id="stat-stocked">0</span></div>
-    <div class="stat-pill" id="current-kuji-stat">🎯 <span class="val" id="stat-kuji">-</span></div>
+    <div class="stat-pill">🎯 <span class="val" id="stat-kuji">-</span></div>
   </div>
 </div>
 
 <div class="main">
-  <!-- くじ選択 -->
+  <!-- バックアップリマインダー -->
+  <div id="backup-banner"></div>
+
   <div class="kuji-selector">
     <div class="kuji-selector-label">▸ 追跡中のくじ</div>
     <div class="kuji-select-row">
@@ -556,75 +768,69 @@
     </div>
   </div>
 
-  <!-- フィルター -->
-  <div class="filter-tabs" id="filter-tabs">
-    <button class="tab-btn active" onclick="setFilter('all', this)">すべて</button>
-    <button class="tab-btn" onclick="setFilter('stock', this)">在庫あり</button>
-    <button class="tab-btn" onclick="setFilter('nostock', this)">完売</button>
-    <button class="tab-btn" onclick="setFilter('old', this)">情報古い</button>
-  </div>
+  <!-- 賞サマリーバー -->
+  <div id="prize-summary" class="prize-summary"></div>
+
+  <div class="filter-tabs" id="filter-tabs"></div>
 
   <div id="stores-list"></div>
 </div>
 
-<!-- FAB -->
 <button class="fab" onclick="openAddStore()">＋</button>
 
-<!-- 店舗追加モーダル -->
-<div class="modal-overlay" id="modal-store">
+<div class="toast" id="toast"></div>
+
+<!-- 店舗モーダル -->
+<div class="modal-overlay" id="modal-store" onclick="if(event.target===this)closeModal('modal-store')">
   <div class="modal">
+    <div class="modal-handle"></div>
     <div class="modal-title">
       <span id="modal-store-title">店舗を追加</span>
       <button class="modal-close" onclick="closeModal('modal-store')">×</button>
     </div>
-
     <div class="form-row">
       <div class="form-grid2">
         <div>
-          <label class="form-label">CHAIN / チェーン</label>
-          <select id="f-chain" onchange="onChainChange()">
-          </select>
+          <label class="form-label">チェーン</label>
+          <select id="f-chain" onchange="onChainChange()"></select>
         </div>
         <div>
-          <label class="form-label">AREA / エリア</label>
+          <label class="form-label">エリア</label>
           <input type="text" id="f-area" placeholder="例：渋谷区">
         </div>
       </div>
     </div>
-
     <div class="form-row">
-      <label class="form-label">STORE NAME / 店名</label>
+      <label class="form-label">店名</label>
       <div id="f-name-area">
         <select id="f-name-select" onchange="onStoreNameSelect()" style="display:none;">
           <option value="">-- 登録済みから選択 --</option>
         </select>
         <input type="text" id="f-name" placeholder="例：渋谷〇〇店" style="display:none;">
-        <button type="button" class="btn btn-sm" id="f-name-toggle" onclick="toggleNameMode()" style="margin-top:6px;">📝 新規入力に切替</button>
+        <button type="button" class="btn btn-sm btn-ghost" id="f-name-toggle" onclick="toggleNameMode()" style="margin-top:5px;">📝 新規入力に切替</button>
       </div>
     </div>
-
     <div class="form-row">
-      <label class="form-label">MEMO / メモ</label>
+      <label class="form-label">メモ</label>
       <input type="text" id="f-memo" placeholder="例：改札出て左すぐ">
     </div>
-
     <div class="form-row">
-      <label class="form-label">REMAINING / 残りくじ数</label>
-      <div class="count-stepper" style="width:fit-content;">
-        <button type="button" class="count-stepper-btn minus" onclick="stepRemaining(-1)">−</button>
-        <input class="count-val" type="number" min="0" id="f-remaining" value="0" oninput="this.value=Math.max(0,parseInt(this.value)||0)">
-        <button type="button" class="count-stepper-btn" onclick="stepRemaining(1)">＋</button>
+      <label class="form-label">残りくじ数</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="count-stepper" style="width:fit-content;">
+          <button type="button" class="count-stepper-btn minus" onclick="stepRemaining(-1)">−</button>
+          <input class="count-val" type="number" min="0" id="f-remaining" value="0" oninput="this.value=Math.max(0,parseInt(this.value)||0)">
+          <button type="button" class="count-stepper-btn" onclick="stepRemaining(1)">＋</button>
+        </div>
+        <span class="form-hint">はずれ除く景品合計</span>
       </div>
-      <div class="form-hint">景品くじの合計枚数（はずれは除く）</div>
     </div>
-
     <div class="prizes-editor">
-      <label class="form-label">PRIZES / 賞の残り枚数</label>
+      <label class="form-label">賞の残り枚数</label>
       <div id="prize-editor-rows"></div>
-      <button class="btn btn-sm" onclick="addPrizeRow()" style="margin-top:4px;">＋ 賞を追加</button>
+      <button class="btn btn-sm btn-ghost" onclick="addPrizeRow()" style="margin-top:2px;">＋ 賞を追加</button>
     </div>
-
-    <div style="display:flex; gap:8px; margin-top:16px;">
+    <div style="display:flex; gap:8px; margin-top:14px;">
       <button class="btn" style="flex:1" onclick="closeModal('modal-store')">キャンセル</button>
       <button class="btn btn-accent" style="flex:2" onclick="saveStore()">保存</button>
     </div>
@@ -632,18 +838,19 @@
 </div>
 
 <!-- くじ追加モーダル -->
-<div class="modal-overlay" id="modal-kuji">
+<div class="modal-overlay" id="modal-kuji" onclick="if(event.target===this)closeModal('modal-kuji')">
   <div class="modal">
+    <div class="modal-handle"></div>
     <div class="modal-title">
-      くじを追加
+      <span id="modal-kuji-title">くじを追加</span>
       <button class="modal-close" onclick="closeModal('modal-kuji')">×</button>
     </div>
     <div class="form-row">
-      <label class="form-label">KUJI NAME / くじ名</label>
+      <label class="form-label">くじ名</label>
       <input type="text" id="f-kuji-name" placeholder="例：鬼滅の刃 一番くじ 〇〇篇">
     </div>
     <div class="form-row">
-      <label class="form-label">CHAIN / 取り扱いコンビニ</label>
+      <label class="form-label">取り扱いコンビニ</label>
       <div class="chain-chip-group" id="f-kuji-chains">
         <label class="chain-chip"><input type="checkbox" value="711" checked><span class="chip-body chip-711">🏪 セブン</span></label>
         <label class="chain-chip"><input type="checkbox" value="lw"><span class="chip-body chip-lw">🏪 ローソン</span></label>
@@ -653,43 +860,93 @@
       </div>
     </div>
     <div class="form-row">
-      <label class="form-label">DEFAULT PRIZES / 賞のラインナップ（カンマ区切り）</label>
-      <input type="text" id="f-kuji-prizes" placeholder="例：A,B,C,D,E">
+      <label class="form-label">賞のラインナップ（カンマ区切り）</label>
+      <input type="text" id="f-kuji-prizes" placeholder="例：A,B,C,D,E" value="A,B,C,D,E">
     </div>
-    <div style="display:flex; gap:8px; margin-top:16px;">
+    <div style="display:flex; gap:8px; margin-top:14px;">
       <button class="btn" style="flex:1" onclick="closeModal('modal-kuji')">キャンセル</button>
-      <button class="btn btn-accent" style="flex:2" onclick="saveKuji()">追加</button>
+      <button class="btn btn-accent" style="flex:2" id="btn-kuji-save" onclick="saveKuji()">追加</button>
     </div>
   </div>
 </div>
 
 <!-- 設定モーダル -->
-<div class="modal-overlay" id="modal-settings">
+<div class="modal-overlay" id="modal-settings" onclick="if(event.target===this)closeModal('modal-settings')">
   <div class="modal">
+    <div class="modal-handle"></div>
     <div class="modal-title">
       設定
       <button class="modal-close" onclick="closeModal('modal-settings')">×</button>
     </div>
-    <div id="kuji-manage-list"></div>
-    <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
-      <button class="btn btn-danger" style="width:100%" onclick="clearAllData()">⚠️ 全データを削除</button>
+
+    <div class="settings-section">
+      <div id="kuji-manage-list"></div>
     </div>
-    <div style="margin-top:8px; font-size:11px; color:var(--text3); text-align:center;">
-      データはこのスマホ本体に保存されます
+
+    <div class="settings-section">
+      <div class="form-label" style="margin-bottom:6px;">データ容量</div>
+      <div class="settings-row">
+        <span class="settings-label">使用中</span>
+        <span class="settings-val" id="data-size">--</span>
+      </div>
+      <div class="data-bar">
+        <div class="data-bar-fill" id="data-bar-fill" style="width:0%"></div>
+      </div>
+      <div class="form-hint" style="margin-top:4px;">localStorage上限: 約5MB（バックアップ含む）</div>
+    </div>
+
+    <div class="settings-section">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+        <div class="form-label" style="margin:0;">バックアップ</div>
+        <button class="btn btn-sm btn-accent" onclick="createManualBackup()">💾 今すぐ保存</button>
+      </div>
+      <div class="form-hint" style="margin-bottom:8px;">自動: データ更新10回ごと ／ 手動: 最大5件保持</div>
+      <div id="backup-list"></div>
+    </div>
+
+    <div class="settings-section">
+      <div class="form-label" style="margin-bottom:8px;">ファイル入出力</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-sm" onclick="exportData()" style="flex:1;">📤 JSONエクスポート</button>
+        <button class="btn btn-sm" onclick="document.getElementById('import-file').click()" style="flex:1;">📥 JSONインポート</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
+      </div>
+      <div class="form-hint" style="margin-top:4px;">端末移行・外部保存用。インポートで上書きされます</div>
+    </div>
+
+    <div class="settings-section">
+      <button class="btn btn-danger" style="width:100%" onclick="clearAllData()">⚠️ 全データを削除</button>
+      <div class="form-hint" style="margin-top:6px;text-align:center;">データはこのスマホ本体に保存されます</div>
     </div>
   </div>
 </div>
 
 <script>
-// ===== DATA STORE =====
-let data = {
-  kujis: [],       // { id, name, prizes: ['A','B','C',...] }
-  stores: [],      // { id, kujiId, name, chain, area, memo, prizes: {A: 3, B: 1, ...}, updatedAt }
-  currentKujiId: null
-};
+// ===== DATA =====
+let data = { kujis: [], stores: [], currentKujiId: null };
+let saveCount = 0; // auto-backup trigger counter
+const AUTO_BACKUP_INTERVAL = 10; // auto-backup every N saves
+const MAX_AUTO_BACKUPS = 3;
+const MAX_MANUAL_BACKUPS = 5;
+const BACKUP_REMIND_DAYS = 3;
 
 function save() {
-  localStorage.setItem('kuji-tracker', JSON.stringify(data));
+  const clean = {
+    kujis: data.kujis,
+    stores: data.stores.map(s => {
+      const { _lastTap, _timer, ...rest } = s;
+      return rest;
+    }),
+    currentKujiId: data.currentKujiId
+  };
+  localStorage.setItem('kuji-tracker', JSON.stringify(clean));
+
+  // Auto-backup check
+  saveCount++;
+  if (saveCount >= AUTO_BACKUP_INTERVAL) {
+    saveCount = 0;
+    createAutoBackup();
+  }
 }
 
 function load() {
@@ -697,13 +954,14 @@ function load() {
   if (raw) {
     try { data = JSON.parse(raw); } catch(e) {}
   }
-  // デフォルトくじがなければサンプル追加
+  if (!data.kujis) data.kujis = [];
+  if (!data.stores) data.stores = [];
   if (data.kujis.length === 0) {
     data.kujis.push({
       id: uid(),
       name: '鬼滅の刃 一番くじ',
-      prizes: ['A', 'B', 'C', 'D', 'E'],
-      chains: ['711', 'lw', 'fm']
+      prizes: ['A','B','C','D','E'],
+      chains: ['711','lw','fm']
     });
     save();
   }
@@ -713,18 +971,38 @@ function load() {
 }
 
 function uid() {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+}
+
+function sortedRanks(kuji, extraKeys) {
+  const kujiOrder = kuji?.prizes || [];
+  const extra = (extraKeys || []).filter(r => !kujiOrder.includes(r));
+  extra.sort((a, b) => a.localeCompare(b, 'ja'));
+  return [...kujiOrder, ...extra];
 }
 
 // ===== STATE =====
 let editingStoreId = null;
 let currentFilter = 'all';
+let toastTimer = null;
+
+// ===== TOAST =====
+function showToast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + (type || '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.className = 'toast'; }, 1400);
+}
 
 // ===== RENDER =====
 function render() {
   renderKujiSelect();
+  renderFilters();
+  renderPrizeSummary();
   renderStores();
   renderStats();
+  renderBackupBanner();
 }
 
 function renderKujiSelect() {
@@ -737,19 +1015,55 @@ function renderKujiSelect() {
     if (k.id === data.currentKujiId) opt.selected = true;
     sel.appendChild(opt);
   });
-  document.getElementById('stat-kuji').textContent =
-    data.kujis.find(k => k.id === data.currentKujiId)?.name || '-';
+  const kuji = data.kujis.find(k => k.id === data.currentKujiId);
+  document.getElementById('stat-kuji').textContent = kuji?.name || '-';
 }
 
 function getStoreStockStatus(store) {
-  const total = Object.values(store.prizes || {}).reduce((a, b) => a + b, 0);
-  return total > 0;
+  return Object.values(store.prizes || {}).reduce((a, b) => a + b, 0) > 0;
 }
 
 function isOldData(store) {
   if (!store.updatedAt) return false;
-  const diff = Date.now() - new Date(store.updatedAt).getTime();
-  return diff > 1000 * 60 * 60 * 6; // 6時間以上
+  return Date.now() - new Date(store.updatedAt).getTime() > 6 * 3600000;
+}
+
+function renderFilters() {
+  const stores = data.stores.filter(s => s.kujiId === data.currentKujiId);
+  const stockCount = stores.filter(s => getStoreStockStatus(s)).length;
+  const noStockCount = stores.filter(s => !getStoreStockStatus(s)).length;
+  const oldCount = stores.filter(s => isOldData(s)).length;
+
+  const el = document.getElementById('filter-tabs');
+  const filters = [
+    ['all', 'すべて', stores.length],
+    ['stock', '在庫あり', stockCount],
+    ['nostock', '完売', noStockCount],
+    ['old', '情報古い', oldCount]
+  ];
+  el.innerHTML = filters.map(([key, label, count]) =>
+    `<button class="tab-btn ${currentFilter === key ? 'active' : ''}" onclick="setFilter('${key}', this)">${label}<span class="tab-count">${count}</span></button>`
+  ).join('');
+}
+
+function renderPrizeSummary() {
+  const el = document.getElementById('prize-summary');
+  const kuji = data.kujis.find(k => k.id === data.currentKujiId);
+  if (!kuji) { el.innerHTML = ''; return; }
+
+  const stores = data.stores.filter(s => s.kujiId === data.currentKujiId);
+  if (stores.length === 0) { el.innerHTML = ''; return; }
+
+  const allRanks = sortedRanks(kuji, stores.flatMap(s => Object.keys(s.prizes || {})));
+  el.innerHTML = allRanks.map(rank => {
+    const total = stores.reduce((sum, s) => sum + ((s.prizes || {})[rank] || 0), 0);
+    const storesHaving = stores.filter(s => ((s.prizes || {})[rank] || 0) > 0).length;
+    return `<div class="prize-summary-chip ${total === 0 ? 'zero' : ''}">
+      <span class="ps-rank rank-${rank}">${rank}賞</span>
+      <span class="ps-count">${total}</span>
+      <span style="color:var(--text3)">${storesHaving}店</span>
+    </div>`;
+  }).join('');
 }
 
 function renderStores() {
@@ -757,7 +1071,7 @@ function renderStores() {
   const kuji = data.kujis.find(k => k.id === data.currentKujiId);
 
   if (!kuji) {
-    el.innerHTML = `<div class="empty-state"><div class="icon">🎯</div><div class="msg">くじを選択してください<br>「＋」ボタンでくじを追加できます</div></div>`;
+    el.innerHTML = `<div class="empty-state"><div class="icon">🎯</div><div class="msg">くじを選択してください<br>「＋」ボタンでくじを追加</div></div>`;
     return;
   }
 
@@ -768,48 +1082,52 @@ function renderStores() {
   if (currentFilter === 'old') stores = stores.filter(s => isOldData(s));
 
   if (stores.length === 0) {
-    el.innerHTML = `<div class="empty-state"><div class="icon">🏪</div><div class="msg">店舗がまだありません<br>右下の「＋」ボタンで追加しましょう</div></div>`;
+    const msgs = {
+      all: '店舗がまだありません<br>右下の「＋」ボタンで追加',
+      stock: '在庫ありの店舗はありません',
+      nostock: '完売の店舗はありません',
+      old: '情報が古い店舗はありません'
+    };
+    el.innerHTML = `<div class="empty-state"><div class="icon">🏪</div><div class="msg">${msgs[currentFilter]}</div></div>`;
     return;
   }
 
-  // 在庫あり→古い→完売 の順にソート
+  // ソート: 在庫あり→古い→完売
   stores.sort((a, b) => {
-    const aStock = getStoreStockStatus(a) ? 2 : 0;
-    const bStock = getStoreStockStatus(b) ? 2 : 0;
-    const aOld = isOldData(a) ? 1 : 0;
-    const bOld = isOldData(b) ? 1 : 0;
-    return (bStock - bOld) - (aStock - aOld);
+    const aScore = getStoreStockStatus(a) ? (isOldData(a) ? 1 : 2) : 0;
+    const bScore = getStoreStockStatus(b) ? (isOldData(b) ? 1 : 2) : 0;
+    return bScore - aScore;
   });
 
   const chainLabels = {
-    '711': ['7-Eleven', 'badge-711'],
+    '711': ['7-11', 'badge-711'],
     'lw': ['Lawson', 'badge-lw'],
     'fm': ['FamilyMart', 'badge-fm'],
     'mm': ['Ministop', 'badge-mm'],
     'other': ['Other', 'badge-other']
   };
 
+  // 全賞を表示（くじ定義 + store独自賞をマージ）
   el.innerHTML = stores.map(store => {
     const hasStock = getStoreStockStatus(store);
     const old = isOldData(store);
-    const [chainName, chainClass] = chainLabels[store.chain] || ['Other', 'badge-other'];
-
-    const timeStr = store.updatedAt
-      ? formatTime(store.updatedAt)
-      : '未確認';
+    const [chainName, chainClass] = chainLabels[store.chain] || ['?', 'badge-other'];
+    const timeStr = store.updatedAt ? formatTime(store.updatedAt) : '未確認';
     const timeClass = old ? 'old' : (store.updatedAt ? 'recent' : '');
+    const cardClass = hasStock ? 'has-stock' : 'no-stock';
+    const oldClass = old ? 'old-data' : '';
 
-    const prizesHtml = (kuji.prizes || []).map(rank => {
+    const allRanks = sortedRanks(kuji, Object.keys(store.prizes || {}));
+    const prizesHtml = allRanks.map(rank => {
       const count = (store.prizes || {})[rank] || 0;
       let countClass = 'zero';
       if (count > 5) countClass = 'high';
       else if (count > 2) countClass = 'mid';
       else if (count > 0) countClass = 'low';
       const chipClass = count > 0 ? 'has-stock' : 'no-stock';
-      const rankClass = 'rank-' + rank;
-
-      return `<div class="prize-chip ${chipClass}" onclick="updateCount('${store.id}','${rank}', event)">
-        <span class="prize-rank ${rankClass}">${rank}賞</span>
+      return `<div class="prize-chip ${chipClass}" ontouchstart="chipTouchStart('${store.id}','${rank}',event)" ontouchend="chipTouchEnd('${store.id}','${rank}',event)" onclick="chipClick('${store.id}','${rank}',event)">
+        <div class="tap-hint"></div>
+        <span class="prize-rank rank-${rank}">${rank}賞</span>
         <div>
           <div class="prize-count ${countClass}">${count}</div>
           <div class="prize-unit">枚</div>
@@ -817,24 +1135,30 @@ function renderStores() {
       </div>`;
     }).join('');
 
-    return `<div class="store-card ${hasStock ? 'has-stock' : 'no-stock'}" id="store-${store.id}">
+    const remaining = store.remaining || 0;
+    let remainClass = '';
+    if (remaining > 0 && remaining <= 5) remainClass = 'low';
+    else if (remaining >= 20) remainClass = 'high';
+    else if (remaining > 0) remainClass = 'mid';
+
+    return `<div class="store-card ${cardClass} ${oldClass}" id="store-${store.id}">
       <div class="store-header">
         <div class="store-info">
-          <div class="store-name">
-            ${escHtml(store.name)}
+          <div class="store-name-row">
+            <span class="store-name">${escHtml(store.name)}</span>
             <span class="store-type-badge ${chainClass}">${chainName}</span>
           </div>
-          ${store.area ? `<div class="store-location">📍 ${escHtml(store.area)}${store.memo ? ' · ' + escHtml(store.memo) : ''}</div>` : ''}
+          ${store.area || store.memo ? `<div class="store-meta">📍 ${escHtml(store.area || '')}${store.area && store.memo ? ' · ' : ''}${escHtml(store.memo || '')}</div>` : ''}
         </div>
         <div class="store-actions">
           <button class="btn btn-sm" onclick="editStore('${store.id}')">✏️</button>
           <button class="btn btn-sm btn-danger" onclick="deleteStore('${store.id}')">🗑</button>
         </div>
       </div>
-      <div class="store-time ${timeClass}">
-        🕐 ${timeStr}
+      <div class="store-status-row">
+        <span class="time-tag ${timeClass}">🕐 ${timeStr}</span>
+        ${remaining > 0 ? `<span class="remain-tag">🎫 残 <span class="rv ${remainClass}">${remaining}</span></span>` : ''}
       </div>
-      ${store.remaining != null && store.remaining > 0 ? `<div class="remaining-badge">🎫 残り <span class="remain-val ${store.remaining <= 5 ? 'low' : store.remaining >= 20 ? 'high' : ''}">${store.remaining}</span> 枚</div>` : ''}
       <div class="prizes-section">
         <div class="prizes-grid">${prizesHtml}</div>
       </div>
@@ -849,84 +1173,107 @@ function renderStats() {
 }
 
 function formatTime(iso) {
-  const d = new Date(iso);
-  const now = new Date();
-  const diff = now - d;
+  const diff = Date.now() - new Date(iso).getTime();
   if (diff < 60000) return 'たった今';
   if (diff < 3600000) return Math.floor(diff / 60000) + '分前';
   if (diff < 86400000) return Math.floor(diff / 3600000) + '時間前';
+  const d = new Date(iso);
   return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
 function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// ===== INTERACTIONS =====
+// ===== CHIP TAP (タップ=+1, 長押し=-1) =====
+const chipTimers = {};
+
+function chipTouchStart(storeId, rank, ev) {
+  const key = storeId + rank;
+  chipTimers[key] = { time: Date.now(), held: false };
+  chipTimers[key].timer = setTimeout(() => {
+    chipTimers[key].held = true;
+    updatePrizeCount(storeId, rank, -1, ev);
+  }, 500);
+}
+
+function chipTouchEnd(storeId, rank, ev) {
+  const key = storeId + rank;
+  const info = chipTimers[key];
+  if (info) {
+    clearTimeout(info.timer);
+    if (!info.held) {
+      ev.preventDefault();
+      updatePrizeCount(storeId, rank, 1, ev);
+    }
+  }
+  delete chipTimers[key];
+}
+
+function chipClick(storeId, rank, ev) {
+  // Desktop fallback (no touch events)
+  if (!('ontouchstart' in window)) {
+    updatePrizeCount(storeId, rank, 1, ev);
+  }
+}
+
+function updatePrizeCount(storeId, rank, delta, ev) {
+  const store = data.stores.find(s => s.id === storeId);
+  if (!store) return;
+  if (!store.prizes) store.prizes = {};
+  const current = store.prizes[rank] || 0;
+  const newVal = Math.max(0, current + delta);
+  if (newVal === current && delta < 0) return;
+  store.prizes[rank] = newVal;
+  store.updatedAt = new Date().toISOString();
+  save();
+
+  // Visual feedback
+  const chip = ev?.currentTarget || ev?.target?.closest?.('.prize-chip');
+  if (chip) {
+    chip.classList.remove('flash-plus', 'flash-minus');
+    void chip.offsetWidth;
+    chip.classList.add(delta > 0 ? 'flash-plus' : 'flash-minus');
+    setTimeout(() => chip.classList.remove('flash-plus', 'flash-minus'), 300);
+  }
+
+  showToast(`${rank}賞 → ${newVal}枚`, delta > 0 ? 'plus' : 'minus');
+  render();
+}
+
+// ===== MODALS =====
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ===== KUJI =====
 function selectKuji(id) {
   data.currentKujiId = id || null;
+  currentFilter = 'all';
   save();
   render();
 }
 
 function setFilter(f, el) {
   currentFilter = f;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  renderStores();
+  render();
 }
-
-function updateCount(storeId, rank, ev) {
-  const store = data.stores.find(s => s.id === storeId);
-  if (!store) return;
-  if (!store.prizes) store.prizes = {};
-
-  const current = store.prizes[rank] || 0;
-  // ダブルタップで-1, 1タップで+1
-  // モーダルを出さずに直接+-
-  const now = Date.now();
-  if (!store._lastTap) store._lastTap = {};
-  if (store._lastTap[rank] && now - store._lastTap[rank] < 400) {
-    // ダブルタップ→-1
-    store.prizes[rank] = Math.max(0, current - 1);
-  } else {
-    // シングルタップ→+1
-    store.prizes[rank] = current + 1;
-  }
-  store._lastTap[rank] = now;
-  store.updatedAt = new Date().toISOString();
-  save();
-
-  // アニメーション
-  const el = ev.currentTarget;
-  el.classList.remove('flash');
-  void el.offsetWidth;
-  el.classList.add('flash');
-
-  renderStores();
-  renderStats();
-}
-
-// ===== MODALS =====
-function openModal(id) {
-  document.getElementById(id).classList.add('open');
-}
-function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-}
-
-// 外側タップで閉じる
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', function(e) {
-    if (e.target === this) closeModal(this.id);
-  });
-});
 
 // ===== ADD STORE =====
 let prizeRows = [];
+let nameMode = 'new';
 
 function openAddStore() {
   editingStoreId = null;
+  if (!data.currentKujiId) {
+    showToast('先にくじを選択してください', '');
+    return;
+  }
   document.getElementById('modal-store-title').textContent = '店舗を追加';
   document.getElementById('f-name').value = '';
   document.getElementById('f-name-select').value = '';
@@ -935,7 +1282,7 @@ function openAddStore() {
   document.getElementById('f-remaining').value = 0;
 
   const kuji = data.kujis.find(k => k.id === data.currentKujiId);
-  const defaultChain = (kuji?.chains && kuji.chains.length > 0) ? kuji.chains[0] : '711';
+  const defaultChain = kuji?.chains?.[0] || '711';
   updateChainOptions(kuji?.chains);
   document.getElementById('f-chain').value = defaultChain;
   updateStoreNameDropdown(defaultChain);
@@ -946,43 +1293,28 @@ function openAddStore() {
 }
 
 function updateChainOptions(kujiChains) {
-  const allChains = {
-    '711': 'セブン-イレブン',
-    'lw': 'ローソン',
-    'fm': 'ファミマ',
-    'mm': 'ミニストップ',
-    'other': 'その他'
-  };
+  const all = { '711': 'セブン-イレブン', 'lw': 'ローソン', 'fm': 'ファミマ', 'mm': 'ミニストップ', 'other': 'その他' };
   const sel = document.getElementById('f-chain');
   sel.innerHTML = '';
-  const chains = (kujiChains && kujiChains.length > 0) ? kujiChains : Object.keys(allChains);
+  const chains = kujiChains?.length ? kujiChains : Object.keys(all);
   chains.forEach(c => {
     const opt = document.createElement('option');
     opt.value = c;
-    opt.textContent = allChains[c] || c;
+    opt.textContent = all[c] || c;
     sel.appendChild(opt);
   });
 }
 
 function onChainChange() {
-  const chain = document.getElementById('f-chain').value;
-  updateStoreNameDropdown(chain);
+  updateStoreNameDropdown(document.getElementById('f-chain').value);
 }
-
-let nameMode = 'new'; // 'select' or 'new'
 
 function updateStoreNameDropdown(chain) {
   const sel = document.getElementById('f-name-select');
   const inp = document.getElementById('f-name');
   const btn = document.getElementById('f-name-toggle');
 
-  // 同チェーンの店名をユニークに収集
-  const names = [...new Set(
-    data.stores
-      .filter(s => s.chain === chain)
-      .map(s => s.name)
-  )].sort();
-
+  const names = [...new Set(data.stores.filter(s => s.chain === chain).map(s => s.name))].sort();
   sel.innerHTML = '<option value="">-- 登録済みから選択 --</option>';
   names.forEach(n => {
     const opt = document.createElement('option');
@@ -1027,10 +1359,9 @@ function toggleNameMode() {
 }
 
 function getStoreName() {
-  if (nameMode === 'select') {
-    return document.getElementById('f-name-select').value.trim();
-  }
-  return document.getElementById('f-name').value.trim();
+  return nameMode === 'select'
+    ? document.getElementById('f-name-select').value.trim()
+    : document.getElementById('f-name').value.trim();
 }
 
 function setStoreName(name, chain) {
@@ -1047,12 +1378,8 @@ function setStoreName(name, chain) {
     document.getElementById('f-name-select').style.display = 'none';
     document.getElementById('f-name').style.display = '';
     document.getElementById('f-name').value = name;
-    if (names.length > 0) {
-      document.getElementById('f-name-toggle').textContent = '📋 登録済みから選択';
-      document.getElementById('f-name-toggle').style.display = '';
-    } else {
-      document.getElementById('f-name-toggle').style.display = 'none';
-    }
+    document.getElementById('f-name-toggle').textContent = '📋 登録済みから選択';
+    document.getElementById('f-name-toggle').style.display = names.length > 0 ? '' : 'none';
   }
 }
 
@@ -1062,10 +1389,10 @@ function onStoreNameSelect() {
   if (!name) return;
   const match = data.stores.find(s => s.chain === chain && s.name === name);
   if (match) {
-    const areaEl = document.getElementById('f-area');
-    const memoEl = document.getElementById('f-memo');
-    if (!areaEl.value && match.area) areaEl.value = match.area;
-    if (!memoEl.value && match.memo) memoEl.value = match.memo;
+    const a = document.getElementById('f-area');
+    const m = document.getElementById('f-memo');
+    if (!a.value && match.area) a.value = match.area;
+    if (!m.value && match.memo) m.value = match.memo;
   }
 }
 
@@ -1090,16 +1417,14 @@ function editStore(id) {
   setStoreName(store.name, store.chain || '711');
 
   const prizes = store.prizes || {};
-  prizeRows = (kuji?.prizes || Object.keys(prizes)).map(r => ({
-    rank: r, count: prizes[r] || 0
-  }));
+  const allRanks = sortedRanks(kuji, Object.keys(prizes));
+  prizeRows = allRanks.map(r => ({ rank: r, count: prizes[r] || 0 }));
   renderPrizeEditor();
   openModal('modal-store');
 }
 
 function renderPrizeEditor() {
-  const container = document.getElementById('prize-editor-rows');
-  container.innerHTML = prizeRows.map((p, i) => `
+  document.getElementById('prize-editor-rows').innerHTML = prizeRows.map((p, i) => `
     <div class="prize-editor-row">
       <input class="rank-input" type="text" value="${escHtml(p.rank)}" placeholder="賞" oninput="prizeRows[${i}].rank=this.value">
       <div class="count-stepper">
@@ -1118,19 +1443,14 @@ function stepCount(i, delta) {
 }
 
 function addPrizeRow() {
-  const nextRank = getNextRank();
-  prizeRows.push({ rank: nextRank, count: 0 });
-  renderPrizeEditor();
-}
-
-function getNextRank() {
   const used = prizeRows.map(p => p.rank.toUpperCase());
-  // A〜Zで未使用の次のアルファベットを返す
+  let next = '';
   for (let i = 0; i < 26; i++) {
-    const letter = String.fromCharCode(65 + i);
-    if (!used.includes(letter)) return letter;
+    const l = String.fromCharCode(65 + i);
+    if (!used.includes(l)) { next = l; break; }
   }
-  return '';
+  prizeRows.push({ rank: next, count: 0 });
+  renderPrizeEditor();
 }
 
 function removePrizeRow(i) {
@@ -1140,13 +1460,23 @@ function removePrizeRow(i) {
 
 function saveStore() {
   const name = getStoreName();
-  if (!name) { alert('店名を入力してください'); return; }
-  if (!data.currentKujiId) { alert('くじを選択してください'); return; }
+  if (!name) { showToast('店名を入力してください', ''); return; }
+  if (!data.currentKujiId) { showToast('くじを選択してください', ''); return; }
 
   const prizes = {};
+  const dupes = [];
   prizeRows.forEach(p => {
-    if (p.rank) prizes[p.rank] = p.count;
+    if (!p.rank) return;
+    if (prizes.hasOwnProperty(p.rank)) {
+      dupes.push(p.rank);
+      prizes[p.rank] += p.count;
+    } else {
+      prizes[p.rank] = p.count;
+    }
   });
+  if (dupes.length > 0) {
+    showToast(`${dupes.join(',')}賞が重複 → 合算しました`, '');
+  }
 
   if (editingStoreId) {
     const store = data.stores.find(s => s.id === editingStoreId);
@@ -1174,6 +1504,7 @@ function saveStore() {
   }
   save();
   closeModal('modal-store');
+  showToast(editingStoreId ? '更新しました' : '追加しました', 'plus');
   render();
 }
 
@@ -1181,67 +1512,116 @@ function deleteStore(id) {
   if (!confirm('この店舗を削除しますか？')) return;
   data.stores = data.stores.filter(s => s.id !== id);
   save();
+  showToast('削除しました', 'minus');
   render();
 }
 
-// ===== ADD KUJI =====
+// ===== KUJI =====
+let editingKujiId = null;
+
 function openAddKuji() {
+  editingKujiId = null;
+  document.getElementById('modal-kuji-title').textContent = 'くじを追加';
+  document.getElementById('btn-kuji-save').textContent = '追加';
   document.getElementById('f-kuji-name').value = '';
   document.getElementById('f-kuji-prizes').value = 'A,B,C,D,E';
-  // チェーンチップをリセット（セブンのみON）
   document.querySelectorAll('#f-kuji-chains input[type="checkbox"]').forEach(cb => {
     cb.checked = (cb.value === '711');
   });
   openModal('modal-kuji');
 }
 
+function editKuji(id) {
+  const kuji = data.kujis.find(k => k.id === id);
+  if (!kuji) return;
+  editingKujiId = id;
+  document.getElementById('modal-kuji-title').textContent = 'くじを編集';
+  document.getElementById('btn-kuji-save').textContent = '保存';
+  document.getElementById('f-kuji-name').value = kuji.name;
+  document.getElementById('f-kuji-prizes').value = (kuji.prizes || []).join(',');
+  document.querySelectorAll('#f-kuji-chains input[type="checkbox"]').forEach(cb => {
+    cb.checked = (kuji.chains || []).includes(cb.value);
+  });
+  openModal('modal-kuji');
+}
+
 function saveKuji() {
   const name = document.getElementById('f-kuji-name').value.trim();
-  if (!name) { alert('くじ名を入力してください'); return; }
-  const prizesRaw = document.getElementById('f-kuji-prizes').value;
-  const prizes = prizesRaw.split(',').map(s => s.trim()).filter(Boolean);
-
+  if (!name) { showToast('くじ名を入力してください', ''); return; }
+  const prizes = document.getElementById('f-kuji-prizes').value.split(',').map(s => s.trim()).filter(Boolean);
   const chains = [];
-  document.querySelectorAll('#f-kuji-chains input[type="checkbox"]:checked').forEach(cb => {
-    chains.push(cb.value);
-  });
+  document.querySelectorAll('#f-kuji-chains input[type="checkbox"]:checked').forEach(cb => chains.push(cb.value));
 
-  const kuji = { id: uid(), name, prizes, chains };
-  data.kujis.push(kuji);
-  data.currentKujiId = kuji.id;
-  save();
-  closeModal('modal-kuji');
+  if (editingKujiId) {
+    const kuji = data.kujis.find(k => k.id === editingKujiId);
+    if (kuji) {
+      kuji.name = name;
+      kuji.prizes = prizes;
+      kuji.chains = chains;
+    }
+    save();
+    closeModal('modal-kuji');
+    showToast('くじを更新しました', 'plus');
+  } else {
+    const kuji = { id: uid(), name, prizes, chains };
+    data.kujis.push(kuji);
+    data.currentKujiId = kuji.id;
+    save();
+    closeModal('modal-kuji');
+    showToast('くじを追加しました', 'plus');
+  }
   render();
+  // 設定画面が開いていれば更新
+  if (document.getElementById('modal-settings').classList.contains('open')) {
+    renderKujiManageList();
+  }
 }
 
 // ===== SETTINGS =====
 function openSettings() {
   renderKujiManageList();
+  renderDataSize();
+  renderBackupList();
   openModal('modal-settings');
 }
 
 function renderKujiManageList() {
   const el = document.getElementById('kuji-manage-list');
   if (data.kujis.length === 0) {
-    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:16px;">くじがありません</div>';
+    el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:12px;">くじがありません</div>';
     return;
   }
-  el.innerHTML = '<div class="form-label" style="margin-bottom:8px;">登録済みくじ一覧</div>' +
+  const chainLabelsMap = { '711': '7-11', 'lw': 'ローソン', 'fm': 'ファミマ', 'mm': 'ミニストップ', 'other': 'その他' };
+  const chainBadgeMap = { '711': 'badge-711', 'lw': 'badge-lw', 'fm': 'badge-fm', 'mm': 'badge-mm', 'other': 'badge-other' };
+  el.innerHTML = '<div class="form-label" style="margin-bottom:6px;">登録済みくじ</div>' +
     data.kujis.map(k => {
       const cnt = data.stores.filter(s => s.kujiId === k.id).length;
-      const chainLabelsMap = { '711': '7-11', 'lw': 'ローソン', 'fm': 'ファミマ', 'mm': 'ミニストップ', 'other': 'その他' };
-      const chainBadgeMap = { '711': 'badge-711', 'lw': 'badge-lw', 'fm': 'badge-fm', 'mm': 'badge-mm', 'other': 'badge-other' };
       const chainsHtml = (k.chains || []).map(c =>
-        `<span class="store-type-badge ${chainBadgeMap[c] || 'badge-other'}" style="font-size:9px;margin-right:2px;">${chainLabelsMap[c] || c}</span>`
-      ).join('');
+        `<span class="store-type-badge ${chainBadgeMap[c] || 'badge-other'}" style="font-size:8px;">${chainLabelsMap[c] || c}</span>`
+      ).join(' ');
       return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-        <div style="flex:1">
-          <div style="font-size:14px;font-weight:700;">${escHtml(k.name)}</div>
-          <div style="font-size:11px;color:var(--text2);margin-top:2px;">店舗 ${cnt}件 ${chainsHtml}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(k.name)}</div>
+          <div style="font-size:10px;color:var(--text2);margin-top:2px;">店舗 ${cnt}件 ${chainsHtml}</div>
         </div>
+        <button class="btn btn-sm" onclick="editKuji('${k.id}')">✏️</button>
         <button class="btn btn-sm btn-danger" onclick="deleteKuji('${k.id}')">削除</button>
       </div>`;
     }).join('');
+}
+
+function renderDataSize() {
+  const mainRaw = localStorage.getItem('kuji-tracker') || '';
+  const backupRaw = localStorage.getItem('kuji-tracker-backups') || '';
+  const totalBytes = new Blob([mainRaw]).size + new Blob([backupRaw]).size;
+  const mainKb = (new Blob([mainRaw]).size / 1024).toFixed(1);
+  const backupKb = (new Blob([backupRaw]).size / 1024).toFixed(1);
+  const totalKb = (totalBytes / 1024).toFixed(1);
+  const pct = Math.min(100, (totalBytes / (5 * 1024 * 1024)) * 100);
+  document.getElementById('data-size').textContent = `${totalKb} KB（本体 ${mainKb} / バックアップ ${backupKb}）`;
+  const bar = document.getElementById('data-bar-fill');
+  bar.style.width = Math.max(1, pct) + '%';
+  bar.className = 'data-bar-fill' + (pct > 80 ? ' danger' : pct > 50 ? ' warn' : '');
 }
 
 function deleteKuji(id) {
@@ -1251,21 +1631,268 @@ function deleteKuji(id) {
   if (!confirm(`「${kuji.name}」を削除しますか？\n（関連店舗 ${cnt}件も削除されます）`)) return;
   data.kujis = data.kujis.filter(k => k.id !== id);
   data.stores = data.stores.filter(s => s.kujiId !== id);
-  if (data.currentKujiId === id) {
-    data.currentKujiId = data.kujis[0]?.id || null;
-  }
+  if (data.currentKujiId === id) data.currentKujiId = data.kujis[0]?.id || null;
   save();
   render();
   renderKujiManageList();
+  renderDataSize();
 }
 
 function clearAllData() {
-  if (!confirm('全データを削除します。この操作は取り消せません。')) return;
+  if (!confirm('全データを削除します。\n\n※ 現在のデータは自動バックアップされます\nこの操作は取り消せません。')) return;
+
+  // Auto-backup before clearing
+  if (data.stores.length > 0 || data.kujis.length > 0) {
+    createAutoBackup();
+  }
+
   data = { kujis: [], stores: [], currentKujiId: null };
   save();
   load();
   closeModal('modal-settings');
   render();
+  showToast('データを削除しました', 'minus');
+
+  // Ask about backups too
+  setTimeout(() => {
+    if (getBackups().length > 0 && confirm('バックアップデータも削除しますか？\n（復元ポイントが全て消えます）')) {
+      localStorage.removeItem('kuji-tracker-backups');
+      localStorage.removeItem('kuji-tracker-last-backup');
+      showToast('バックアップも削除しました', 'minus');
+    }
+  }, 300);
+}
+
+// ===== BACKUP SYSTEM =====
+function getBackups() {
+  const raw = localStorage.getItem('kuji-tracker-backups');
+  if (!raw) return [];
+  try { return JSON.parse(raw); } catch(e) { return []; }
+}
+
+function saveBackups(backups) {
+  localStorage.setItem('kuji-tracker-backups', JSON.stringify(backups));
+}
+
+function createBackupSnapshot(type, label) {
+  const clean = {
+    kujis: data.kujis,
+    stores: data.stores.map(s => {
+      const { _lastTap, _timer, ...rest } = s;
+      return rest;
+    }),
+    currentKujiId: data.currentKujiId
+  };
+  return {
+    id: uid(),
+    type, // 'auto' | 'manual'
+    label,
+    createdAt: new Date().toISOString(),
+    kujiCount: data.kujis.length,
+    storeCount: data.stores.length,
+    data: JSON.stringify(clean)
+  };
+}
+
+function createAutoBackup() {
+  if (data.stores.length === 0 && data.kujis.length <= 1) return; // skip if nearly empty
+  const backups = getBackups();
+  const autoBackups = backups.filter(b => b.type === 'auto');
+  // Keep only the latest N-1 auto backups (about to add 1 more)
+  while (autoBackups.length >= MAX_AUTO_BACKUPS) {
+    const oldest = autoBackups.shift();
+    const idx = backups.findIndex(b => b.id === oldest.id);
+    if (idx >= 0) backups.splice(idx, 1);
+  }
+  backups.push(createBackupSnapshot('auto', '自動バックアップ'));
+  saveBackups(backups);
+}
+
+function createManualBackup() {
+  const backups = getBackups();
+  const manualBackups = backups.filter(b => b.type === 'manual');
+  if (manualBackups.length >= MAX_MANUAL_BACKUPS) {
+    const oldest = manualBackups[0];
+    const idx = backups.findIndex(b => b.id === oldest.id);
+    if (idx >= 0) backups.splice(idx, 1);
+  }
+  const d = new Date();
+  const label = `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')} 手動保存`;
+  backups.push(createBackupSnapshot('manual', label));
+  saveBackups(backups);
+
+  // Record last manual backup time
+  localStorage.setItem('kuji-tracker-last-backup', new Date().toISOString());
+
+  showToast('バックアップを保存しました', 'plus');
+  renderBackupList();
+  renderDataSize();
+  renderBackupBanner();
+}
+
+function restoreBackup(backupId) {
+  const backups = getBackups();
+  const backup = backups.find(b => b.id === backupId);
+  if (!backup) { showToast('バックアップが見つかりません', 'minus'); return; }
+
+  const parsed = JSON.parse(backup.data);
+  const msg = `この復元ポイントに戻しますか？\n\n` +
+    `📅 ${formatTimeAbs(backup.createdAt)}\n` +
+    `📦 くじ ${backup.kujiCount}件 / 店舗 ${backup.storeCount}件\n\n` +
+    `※ 現在のデータは上書きされます`;
+  if (!confirm(msg)) return;
+
+  // Auto-backup current state before restoring
+  const currentBackups = getBackups();
+  const d = new Date();
+  const safeLabel = `復元前の自動保存 ${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+  currentBackups.push(createBackupSnapshot('auto', safeLabel));
+  // Trim auto backups
+  const autos = currentBackups.filter(b => b.type === 'auto');
+  while (autos.length > MAX_AUTO_BACKUPS + 1) {
+    const oldest = autos.shift();
+    const idx = currentBackups.findIndex(b => b.id === oldest.id);
+    if (idx >= 0) currentBackups.splice(idx, 1);
+  }
+  saveBackups(currentBackups);
+
+  data = parsed;
+  save();
+  showToast('復元しました', 'plus');
+  render();
+  renderBackupList();
+  renderDataSize();
+}
+
+function deleteBackup(backupId) {
+  if (!confirm('このバックアップを削除しますか？')) return;
+  const backups = getBackups().filter(b => b.id !== backupId);
+  saveBackups(backups);
+  showToast('バックアップを削除しました', 'minus');
+  renderBackupList();
+  renderDataSize();
+}
+
+function renderBackupList() {
+  const el = document.getElementById('backup-list');
+  if (!el) return;
+  const backups = getBackups().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+  if (backups.length === 0) {
+    el.innerHTML = '<div class="backup-empty">💾 バックアップはまだありません<br>「今すぐ保存」で復元ポイントを作成</div>';
+    return;
+  }
+
+  el.innerHTML = backups.map(b => {
+    const isAuto = b.type === 'auto';
+    return `<div class="backup-card ${b.type}">
+      <div class="backup-icon ${b.type}">${isAuto ? '🔄' : '💾'}</div>
+      <div class="backup-info">
+        <div class="backup-title">${escHtml(b.label)}</div>
+        <div class="backup-meta">${formatTimeAbs(b.createdAt)} · くじ${b.kujiCount} 店舗${b.storeCount}</div>
+      </div>
+      <div class="backup-actions">
+        <button class="btn btn-sm" onclick="restoreBackup('${b.id}')" title="復元">↩️</button>
+        <button class="btn btn-sm btn-danger" onclick="deleteBackup('${b.id}')" title="削除" style="padding:4px 6px;font-size:10px;">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderBackupBanner() {
+  const el = document.getElementById('backup-banner');
+  if (!el) return;
+
+  // Show if no manual backup in N days and there's data worth backing up
+  if (data.stores.length < 2) { el.innerHTML = ''; return; }
+
+  const lastBackup = localStorage.getItem('kuji-tracker-last-backup');
+  const daysSince = lastBackup
+    ? (Date.now() - new Date(lastBackup).getTime()) / 86400000
+    : Infinity;
+
+  if (daysSince < BACKUP_REMIND_DAYS) { el.innerHTML = ''; return; }
+
+  const msg = lastBackup
+    ? `前回の手動バックアップから <strong>${Math.floor(daysSince)}日</strong> 経過`
+    : '<strong>まだバックアップを取っていません</strong>';
+
+  el.innerHTML = `<div class="backup-banner">
+    <span class="bb-icon">⚠️</span>
+    <div class="bb-text">${msg}<br>データ消失に備えて保存しましょう</div>
+    <button class="btn btn-sm btn-accent" onclick="quickBackup()">💾 保存</button>
+  </div>`;
+}
+
+function quickBackup() {
+  createManualBackup();
+  document.getElementById('backup-banner').innerHTML = '';
+}
+
+function formatTimeAbs(iso) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+// ===== EXPORT / IMPORT =====
+function exportData() {
+  const exportObj = {
+    version: 2,
+    exportedAt: new Date().toISOString(),
+    data: {
+      kujis: data.kujis,
+      stores: data.stores.map(s => {
+        const { _lastTap, _timer, ...rest } = s;
+        return rest;
+      }),
+      currentKujiId: data.currentKujiId
+    }
+  };
+  const json = JSON.stringify(exportObj, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `kuji-tracker-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('エクスポート完了', 'plus');
+}
+
+function importData(ev) {
+  const file = ev.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const raw = JSON.parse(e.target.result);
+
+      // Support both v1 (flat) and v2 (wrapped) format
+      let imported;
+      if (raw.version === 2 && raw.data) {
+        imported = raw.data;
+      } else if (raw.kujis && raw.stores) {
+        imported = raw;
+      } else {
+        showToast('無効なデータ形式です', 'minus');
+        return;
+      }
+
+      if (!confirm(`インポートすると現在のデータが上書きされます。\nくじ ${imported.kujis.length}件、店舗 ${imported.stores.length}件\n\n※ 現在のデータは自動バックアップされます\n実行しますか？`)) return;
+
+      // Auto-backup before import
+      createAutoBackup();
+
+      data = imported;
+      save();
+      render();
+      showToast('インポート完了', 'plus');
+    } catch(err) {
+      showToast('ファイルを読み込めません', 'minus');
+    }
+  };
+  reader.readAsText(file);
+  ev.target.value = '';
 }
 
 // ===== BOOT =====
