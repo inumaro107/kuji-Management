@@ -232,8 +232,12 @@
     font-family: var(--mono);
   }
   .prize-summary-chip .ps-rank { font-weight: 700; }
-  .prize-summary-chip .ps-count { color: var(--accent); font-weight: 700; }
+  .prize-summary-chip .ps-count { font-weight: 700; }
   .prize-summary-chip.zero .ps-count { color: var(--text3); }
+  .prize-summary-chip.last1 .ps-count { color: var(--accent2); }
+  .prize-summary-chip.low .ps-count { color: #ff9f43; }
+  .prize-summary-chip.mid .ps-count { color: var(--accent3); }
+  .prize-summary-chip.high .ps-count { color: var(--accent); }
 
   /* ====== STORE CARD ====== */
   .store-card {
@@ -322,7 +326,9 @@
     background: var(--bg3);
   }
   .remain-tag .rv { font-weight: 700; font-size: 12px; }
-  .remain-tag .rv.low { color: var(--accent2); }
+  .remain-tag .rv.zero { color: var(--text3); }
+  .remain-tag .rv.last1 { color: var(--accent2); }
+  .remain-tag .rv.low { color: #ff9f43; }
   .remain-tag .rv.mid { color: var(--accent3); }
   .remain-tag .rv.high { color: var(--accent); }
 
@@ -376,7 +382,8 @@
     line-height: 1;
   }
   .prize-count.zero { color: var(--text3); }
-  .prize-count.low { color: var(--accent2); }
+  .prize-count.last1 { color: var(--accent2); }
+  .prize-count.low { color: #ff9f43; }
   .prize-count.mid { color: var(--accent3); }
   .prize-count.high { color: var(--accent); }
   .prize-unit { font-size: 9px; color: var(--text3); font-family: var(--mono); }
@@ -1058,7 +1065,12 @@ function renderPrizeSummary() {
   el.innerHTML = allRanks.map(rank => {
     const total = stores.reduce((sum, s) => sum + ((s.prizes || {})[rank] || 0), 0);
     const storesHaving = stores.filter(s => ((s.prizes || {})[rank] || 0) > 0).length;
-    return `<div class="prize-summary-chip ${total === 0 ? 'zero' : ''}">
+    let chipClass = 'zero';
+    if (total >= 4) chipClass = 'high';
+    else if (total === 3) chipClass = 'mid';
+    else if (total === 2) chipClass = 'low';
+    else if (total === 1) chipClass = 'last1';
+    return `<div class="prize-summary-chip ${chipClass}">
       <span class="ps-rank rank-${rank}">${rank}賞</span>
       <span class="ps-count">${total}</span>
       <span style="color:var(--text3)">${storesHaving}店</span>
@@ -1121,9 +1133,10 @@ function renderStores() {
     const prizesHtml = allRanks.map(rank => {
       const count = (store.prizes || {})[rank] || 0;
       let countClass = 'zero';
-      if (count > 5) countClass = 'high';
-      else if (count > 2) countClass = 'mid';
-      else if (count > 0) countClass = 'low';
+      if (count >= 4) countClass = 'high';
+      else if (count === 3) countClass = 'mid';
+      else if (count === 2) countClass = 'low';
+      else if (count === 1) countClass = 'last1';
       const chipClass = count > 0 ? 'has-stock' : 'no-stock';
       return `<div class="prize-chip ${chipClass}" ontouchstart="chipTouchStart('${store.id}','${rank}',event)" ontouchend="chipTouchEnd('${store.id}','${rank}',event)" onclick="chipClick('${store.id}','${rank}',event)">
         <div class="tap-hint"></div>
@@ -1135,11 +1148,12 @@ function renderStores() {
       </div>`;
     }).join('');
 
-    const remaining = store.remaining || 0;
-    let remainClass = '';
-    if (remaining > 0 && remaining <= 5) remainClass = 'low';
-    else if (remaining >= 20) remainClass = 'high';
-    else if (remaining > 0) remainClass = 'mid';
+    const remaining = Object.values(store.prizes || {}).reduce((sum, c) => sum + c, 0);
+    let remainClass = 'zero';
+    if (remaining >= 10) remainClass = 'high';
+    else if (remaining >= 4) remainClass = 'mid';
+    else if (remaining >= 2) remainClass = 'low';
+    else if (remaining === 1) remainClass = 'last1';
 
     return `<div class="store-card ${cardClass} ${oldClass}" id="store-${store.id}">
       <div class="store-header">
@@ -1157,7 +1171,7 @@ function renderStores() {
       </div>
       <div class="store-status-row">
         <span class="time-tag ${timeClass}">🕐 ${timeStr}</span>
-        ${remaining > 0 ? `<span class="remain-tag">🎫 残 <span class="rv ${remainClass}">${remaining}</span></span>` : ''}
+        <span class="remain-tag">🎫 残 <span class="rv ${remainClass}">${remaining}</span></span>
       </div>
       <div class="prizes-section">
         <div class="prizes-grid">${prizesHtml}</div>
