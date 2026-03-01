@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>時刻表示</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #08080d;
+      --bg2: #0e0e16;
+      --accent: #00e8b8;
+      --accent-glow: rgba(0,232,184,0.15);
+      --text: #e4e4f0;
+      --mono: 'JetBrains Mono', monospace;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .clock-container {
+      background: linear-gradient(135deg, var(--bg2) 0%, rgba(14,14,22,0.92) 100%);
+      border: 1px solid rgba(0,232,184,0.2);
+      border-radius: var(--radius);
+      padding: 40px 60px;
+      box-shadow: 0 8px 32px rgba(0,232,184,0.1), 0 0 20px rgba(0,232,184,0.05);
+      text-align: center;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        box-shadow: 0 8px 32px rgba(0,232,184,0.1), 0 0 20px rgba(0,232,184,0.05);
+      }
+      50% {
+        box-shadow: 0 8px 32px rgba(0,232,184,0.2), 0 0 30px rgba(0,232,184,0.1);
+      }
+    }
+
+    .time-display {
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-shadow: 0 0 20px var(--accent-glow);
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 16px;
+    }
+
+    .date-display {
+      font-size: 14px;
+      color: rgba(228,228,240,0.6);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .separator {
+      display: inline-block;
+      width: 2px;
+      height: 40px;
+      background: var(--accent);
+      margin: 0 16px;
+      vertical-align: middle;
+      animation: blink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+      0%, 49%, 100% {
+        opacity: 1;
+      }
+      50%, 99% {
+        opacity: 0;
+      }
+    }
+
+    .back-link {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: rgba(228,228,240,0.5);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-link">← 戻る</a>
+  
+  <div class="clock-container">
+    <div class="time-display" id="time">00:00:00</div>
+    <div class="date-display" id="date">------</div>
+  </div>
+
+  <script>
+    const timeDisplay = document.getElementById('time');
+    const dateDisplay = document.getElementById('date');
+
+    function updateClock() {
+      const now = new Date();
+      
+      // 時刻表示 (HH:MM:SS)
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      timeDisplay.textContent = `${hours}:${minutes}:${seconds}`;
+      
+      // 日付表示 (YYYY年MM月DD日 曜日)
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const date = String(now.getDate()).padStart(2, '0');
+      const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'][now.getDay()];
+      dateDisplay.textContent = `${year}年${month}月${date}日（${dayOfWeek}）`;
+    }
+
+    // 初期表示
+    updateClock();
+    
+    // 毎秒更新
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
