@@ -1148,7 +1148,7 @@ function renderStores() {
       </div>`;
     }).join('');
 
-    const remaining = Object.values(store.prizes || {}).reduce((sum, c) => sum + c, 0);
+    const remaining = store.remaining || 0;
     let remainClass = 'zero';
     if (remaining >= 10) remainClass = 'high';
     else if (remaining >= 4) remainClass = 'mid';
